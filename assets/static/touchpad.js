@@ -65,23 +65,23 @@ let Touchpad = function(touchpadId){
     }
 
     function _press(){
-        if(this.onpress)
-            this.onpress()
+        if(typeof ins.onpress == 'function')
+            ins.onpress()
     }
     
     function _release(){
-        if(this.onrelease)
-            this.onrelease()
+        if(typeof ins.onrelease == 'function')
+            ins.onrelease()
     }
     
     function _click(which){
-        if(this.onclick)
-            this.onclick(which)
+        if(typeof ins.onclick == 'function')
+            ins.onclick(which)
     }
     
     function _move(x, y){
-        if(this.onmove)
-            this.onmove(x, y)
+        if(typeof ins.onmove == 'function')
+            ins.onmove(x, y)
     }
     
 //    function _dblclick(){
@@ -90,8 +90,8 @@ let Touchpad = function(touchpadId){
 //    }
 
     function _scroll(direction){
-        if(this.onscroll)
-            this.onscroll(direction)
+        if(typeof ins.onscroll == 'function')
+            ins.onscroll(direction)
     }
 
     function onTouch(ev){
