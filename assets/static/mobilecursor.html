@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Mobile Cursor</title>
+<link rel="stylesheet" href="/static/stylesheets/master.css"/>
+<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="msapplication-tap-highlight" content="no" />
+</head>
+<body>
+  <p style="display: none;"></p>
+  <button onclick="disconnect()" style="display: none;">Disconnect</button>
+  <!--<button onclick="disconnect()">disconnect</button>
+  <button onclick="reload()">reload</button>-->
+  <div id="touchpad"></div>
+  <div id="keyboard-button">
+  	<img src="/static/images/computer-keyboard-wireless.png"></img>
+  </div>
+  <div id="presentation-remote" style="display:none;">
+  	<div id="next-button" onclick="send({type: 'key', key:'right'})"><img src="/static/images/line-angle-right.png"></img></div>
+  	<div id="back-button" onclick="send({type: 'key', key:'left'})"><img src="/static/images/line-angle-left.png"></img></div>
+  	<div id="exit-button" onclick="send({type: 'key', key:'escape'})"></div>
+  	<div id="small-touchpad-button"></div>
+  	<div id="small-touchpad"></div>
+  </div>
+  <div style="position:absolute;right:1.2em;top:1.2em;" onclick="switchRemote">
+  	<div id="presentation-button">
+  		<img id="presentation-icon"src="/static/images/art-board.png"></img>
+  		<img id="cursor-icon" src="/static/images/pointer-arrow.png"></img>
+  	</div>
+  </div>
+  <div id="cancel-keyboard-area"><p>Ketuk dimana saja untuk keluar.</p></div>
+  <form id="keyboard-form">
+  	<input id="text-input"></input>
+  </form>
+  <div class="simple-keyboard" id="the-keyboard"></div>
+  <div id="reconnect-wrapper">
+  	<p>Sambungan Terputus. Ketuk untuk menyambung ulang.</p>
+  	<!--<img src="/static/images/redo-arrow.png" id="reconnect"></img>-->
+  </div>
+  <script src="/static/touchpad.js"></script>
+  <script src="/static/keyboard.js"></script>
+  <script src="/static/mobilecursor.js"></script>
+</body>
+</html>
