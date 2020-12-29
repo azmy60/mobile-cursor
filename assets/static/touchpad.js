@@ -30,7 +30,7 @@ let Touchpad = function(touchpadId){
     const intervalTouchLeaveForSingleTap = 200
     
     // The time gap of the first finger that touches followed by the next one for triggering a touch 
-    const intervalMultiFingersForTouch = 100
+    const intervalMultiFingersForTouch = 150
     
     // The time gap from first tap to the second tap for predicting a drag
     const intervalDoubleTapForDrag = 100
