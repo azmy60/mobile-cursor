@@ -111,34 +111,3 @@ Object.defineProperties(VirtualKeyboardMapper,{
     RETURN: {value: 1},
     SPACE: {value: 2},
 })
-
-
-//function sendKeyboard(msg, clean_){
-//    switch(msg){
-//    case BACKSPACE:
-//        send(0x16)
-//    break
-//    case ENTER:
-//        if(oldText){
-//            if(autoSpaceWhenEnter)
-//                send(0x92, oldText + ' ')
-//            else
-//                send(0x92, oldText)
-//        }
-//        else
-//            sendKey(0x24)
-//    break
-//    case SPACE:
-//        if(oldText)
-//            send(0x92, oldText + ' ') // ' ' is equivalent to '\xa0'
-//        else
-//            sendKey(0x41)
-//    break
-//    default:
-//        send(0x92, msg)
-//    break
-//    }
-//    
-//    if(clean_)
-//        clean()
-//}
