@@ -33,7 +33,7 @@ let Touchpad = function(touchpadId){
     const intervalMultiFingersForTouch = 150
     
     // The time gap from first tap to the second tap for predicting a drag
-    const intervalDoubleTapForDrag = 100
+    const intervalDoubleTapForDrag = 150
     
     // The numbers to swipe to start scrolling
     const intervalScroll = 10
@@ -46,7 +46,7 @@ let Touchpad = function(touchpadId){
     touchpad.addEventListener('touchcancel', onCancel, { passive: false })
     touchpad.addEventListener('touchmove', onMove, { passive: false })
     
-    let timeStartTouching = null, timeLeaving = null, lastTimeClickForDragging = null, swipeNum = 0,
+    let timeStartTouching = null, timeStartClicking = null, lastTimeClickForDragging = null, swipeNum = 0,
         prediction = PR_NONE
     let isDragging = false, isScrolling = false, readyToDrag = false
     let lastPosTouches = {
@@ -59,7 +59,6 @@ let Touchpad = function(touchpadId){
             this.t = t
         },
         dist: function(ev, t){
-            status(this.t + ' : ' + t)
             if(this.t == -1){
                 this.set(ev, t)
                 return {x: 0, y: 0, t: 0}
@@ -112,9 +111,9 @@ let Touchpad = function(touchpadId){
         
          // one finger
         if(ev.touches.length == 1){
-            if(timeLeaving != null && t - timeLeaving < intervalDoubleTapForDrag){
+            if(timeStartClicking != null && t - timeStartClicking < intervalDoubleTapForDrag){
                 prediction = PR_DRAG
-                timeLeaving = null
+                timeStartClicking = null
             }
             prediction |= PR_LEFT
             timeStartTouching = t
@@ -144,8 +143,10 @@ let Touchpad = function(touchpadId){
             const t = Date.now()
             
             if(!isScrolling && t - timeStartTouching < intervalTouchLeaveForSingleTap){
-                if(prediction & PR_LEFT)
+                if(prediction & PR_LEFT){
                     _click(Touchpad.LEFT)
+                    timeStartClicking = t
+                }
                 else if(prediction & PR_RIGHT)
                     _click(Touchpad.RIGHT)
             }
@@ -154,7 +155,6 @@ let Touchpad = function(touchpadId){
             
             lastPosTouches.reset()
             prediction = PR_NONE
-            timeLeaving = t
             if(isDragging)
                 _release()
             isDragging = false
@@ -186,6 +186,7 @@ let Touchpad = function(touchpadId){
                 _press()
                 isDragging = true
             }
+            
             prediction = PR_NONE
             
             let d = lastPosTouches.dist(ev, t)
