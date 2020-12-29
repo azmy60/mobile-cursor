@@ -11,7 +11,7 @@
  * 
  * -Move-       is when the user touch and move without leaving the touchpad.
  * 
- * -Scroll-     is when the user uses 2 fingers and move vertically.
+ * -Scroll-     is when the user touches with 2 or 3 fingers, and move up and down with 2 fingers horizontally parallel.
  * 
  * ---------
  * 
@@ -35,15 +35,18 @@ let Touchpad = function(touchpadId){
     // The time gap from first tap to the second tap for predicting a drag
     const intervalDoubleTapForDrag = 100
     
+    // The numbers to swipe to start scrolling
+    const intervalScroll = 10
+    
     // Prediction code
-    const PR_NONE = 0x00, PR_LEFT = 0x01, PR_MIDDLE = 0x02, PR_RIGHT = 0x04, PR_DRAG = 0x08
+    const PR_NONE = 0x00, PR_LEFT = 0x01, PR_MIDDLE = 0x02, PR_RIGHT = 0x04, PR_DRAG = 0x08, PR_SCROLL = 0x10
     
     touchpad.addEventListener('touchstart', onTouch, { passive: false })
     touchpad.addEventListener('touchend', onLeave, { passive: false })
     touchpad.addEventListener('touchcancel', onCancel, { passive: false })
     touchpad.addEventListener('touchmove', onMove, { passive: false })
     
-    let timeStartTouching = null, timeLeaving = null, lastTimeClickForDragging = null, 
+    let timeStartTouching = null, timeLeaving = null, lastTimeClickForDragging = null, swipeNum = 0,
         prediction = PR_NONE
     let isDragging = false, isScrolling = false, readyToDrag = false
     let lastPosTouches = {
@@ -126,12 +129,14 @@ let Touchpad = function(touchpadId){
                 prediction = PR_RIGHT
                 timeStartTouching = t
             }
+            prediction |= PR_SCROLL
         }
         else if(ev.touches.length == 3){
             if(t - timeStartTouching < intervalMultiFingersForTouch){
                 prediction = PR_MIDDLE
                 timeStartTouching = t
             }
+            prediction |= PR_SCROLL
         }
     }
 
@@ -143,14 +148,14 @@ let Touchpad = function(touchpadId){
         if(ev.touches.length == 0){
             const t = Date.now()
             
-            if(t - timeStartTouching < intervalTouchLeaveForSingleTap){
+            if(!isScrolling && t - timeStartTouching < intervalTouchLeaveForSingleTap){
                 if(prediction & PR_LEFT)
                     _click(Touchpad.LEFT)
                 else if(prediction & PR_RIGHT)
                     _click(Touchpad.RIGHT)
-                
-                timeStartTouching = null
             }
+            
+            timeStartTouching = null
             
             lastPosTouches.reset()
             prediction = PR_NONE
@@ -158,9 +163,13 @@ let Touchpad = function(touchpadId){
             if(isDragging)
                 _release()
             isDragging = false
+            isScrolling = false
         } 
         else if(ev.touches.length == 1){
 //            timeLeaving = t
+            if(prediction & PR_SCROLL)
+                lastPosTouches.reset()
+            prediction ^= PR_SCROLL
         }
         // Touched with 3 touches previously
         else if(ev.touches.length == 2){
@@ -178,28 +187,45 @@ let Touchpad = function(touchpadId){
     }
 
     function onMove(ev){
+        const t = Date.now()
+        
         if(ev.touches.length == 1){
             if(prediction & PR_DRAG){
                 _press()
                 isDragging = true
             }
-            
             prediction = PR_NONE
             
-            var t = Date.now()
-            var d = lastPosTouches.dist(ev, t)
+            let d = lastPosTouches.dist(ev, t)
             
             // Simulating Acceleration
             // https://stackoverflow.com/a/8773322/10012118
             
-            var dr = Math.sqrt(d.x**2 + d.y**2)
-            var v = dr/d.t
-            var v_new = accelProps.a*v + accelProps.b*(v**2)
-            var dr_new = v_new * d.t
-            var dx_new = Math.round(d.x * (dr_new / dr))
-            var dy_new = Math.round(d.y * (dr_new / dr))
+            let dr = Math.sqrt(d.x**2 + d.y**2)
+            let v = dr/d.t
+            let v_new = accelProps.a*v + accelProps.b*(v**2)
+            let dr_new = v_new * d.t
+            let dx_new = Math.round(d.x * (dr_new / dr))
+            let dy_new = Math.round(d.y * (dr_new / dr))
             
             _move(dx_new || 0, dy_new || 0)
+            lastPosTouches.set(ev, t)
+        }
+        else if(ev.touches.length < 4 && (prediction & PR_SCROLL)){
+            isScrolling = true
+            
+            const y = lastPosTouches.dist(ev, t).y / 1.5
+            const y_new = y > 0 ? Math.ceil(y) : Math.floor(y)
+            
+            swipeNum += Math.abs(y_new)
+            
+            if(swipeNum > intervalScroll){
+                const amount = Math.floor(swipeNum / intervalScroll)
+                    for(let i = 0; i < amount; i++)
+                        _scroll(y_new > 0 ? Touchpad.SCROLLUP : Touchpad.SCROLLDOWN)
+                swipeNum -= intervalScroll * amount
+            }
+            
             lastPosTouches.set(ev, t)
         }
     }
