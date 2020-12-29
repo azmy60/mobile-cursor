@@ -103,7 +103,7 @@ let VirtualKeyboardMapper = function(formId, inputId){
     this.submitWhenPressSpace = true
 
     // If the text is exists, space (" ") is added after the text before submits.
-    this.spaceWhenEnter = true
+    this.spaceWhenEnter = false
 }
 
 Object.defineProperties(VirtualKeyboardMapper,{
