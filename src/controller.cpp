@@ -4,19 +4,10 @@
 
 using namespace mobilecursor;
 
-/*
-inline int int12(int n)
-{
-    static const int max = 0b100000000000; // 2048 or 0b1 << 13 
-    int mag = n & 0b011111111111; // ~(0b1 << 13)
-    if(n & max)
-        return mag - max;
-    return mag;
-}*/
-
 void controller::handle_event(std::string &event)
 {
     const auto type = (uint8_t)event[0];
+    
     switch(type) // TypeEvent
     {
     case LEFTCLK:
@@ -95,14 +86,13 @@ void controller::handle_event(std::string &event)
     case MOUSEMOVE16:
         try
         {
-            int16_t x = (event[1] << 8 | event[2]);
-            int16_t y = (event[3] << 8 | event[4]);
+            int16_t x = ((unsigned char)event[1] << 8) | (unsigned char)event[2];
+            int16_t y = ((unsigned char)event[3] << 8) | (unsigned char)event[4];
             aluspointer::move_mouse(x,y);
         }
         catch(...)
         {
         }
-        std::cout << event[2] << ' ' << event[4];
     break;
     
     default:
