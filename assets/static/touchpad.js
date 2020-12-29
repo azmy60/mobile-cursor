@@ -123,14 +123,14 @@ let Touchpad = function(touchpadId){
         }
         else if(ev.touches.length == 2){
             if(t - timeStartTouching < intervalMultiFingersForTouch){
-                timeStartTouching = t
                 prediction = PR_RIGHT
+                timeStartTouching = t
             }
         }
         else if(ev.touches.length == 3){
             if(t - timeStartTouching < intervalMultiFingersForTouch){
-                timeStartTouching = t
                 prediction = PR_MIDDLE
+                timeStartTouching = t
             }
         }
     }
