@@ -157,6 +157,7 @@ function reload(){
 }
 
 function status(msg){
+    p.style.display = 'block'
 	p.innerText = msg
 }
 
