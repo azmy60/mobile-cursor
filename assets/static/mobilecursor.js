@@ -88,9 +88,11 @@ function connect(){
 		//var data = JSON.parse(event.data)
 	}
 	ws.onopen = event => {
+		status('Tersambung')
 		reconnectWrapper.style.display = 'none'
 	}
 	ws.onclose = event => {
+		status('Terputus')
 		reconnectWrapper.children[0].innerText = 'Sambungan Terputus. Tekan untuk menyambung ulang.'
 		reconnectWrapper.style.display = 'flex'
 		closeKeyboard()

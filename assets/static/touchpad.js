@@ -56,6 +56,7 @@ let Touchpad = function(touchpadId){
             this.t = t
         },
         dist: function(ev, t){
+            status(this.t + ' : ' + t)
             if(this.t == -1){
                 this.set(ev, t)
                 return {x: 0, y: 0, t: 0}
@@ -117,8 +118,7 @@ let Touchpad = function(touchpadId){
                 prediction = PR_DRAG
                 timeLeaving = null
             }
-            else
-                prediction = PR_LEFT
+            prediction |= PR_LEFT
             timeStartTouching = t
         }
         else if(ev.touches.length == 2){
@@ -186,21 +186,20 @@ let Touchpad = function(touchpadId){
             
             prediction = PR_NONE
             
-            let t = Date.now()
-            let d = lastPosTouches.dist(ev, t)
+            var t = Date.now()
+            var d = lastPosTouches.dist(ev, t)
             
             // Simulating Acceleration
             // https://stackoverflow.com/a/8773322/10012118
             
-            let dr = Math.sqrt(d.x**2 + d.y**2)
-            let v = dr/d.t
-            let v_new = accelProps.a*v + accelProps.b*(v**2)
-            let dr_new = v_new * d.t
-            let dx_new = Math.round(d.x * (dr_new / dr))
-            let dy_new = Math.round(d.y * (dr_new / dr))
+            var dr = Math.sqrt(d.x**2 + d.y**2)
+            var v = dr/d.t
+            var v_new = accelProps.a*v + accelProps.b*(v**2)
+            var dr_new = v_new * d.t
+            var dx_new = Math.round(d.x * (dr_new / dr))
+            var dy_new = Math.round(d.y * (dr_new / dr))
             
             _move(dx_new || 0, dy_new || 0)
-            
             lastPosTouches.set(ev, t)
         }
     }
