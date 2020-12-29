@@ -16,7 +16,8 @@ let VirtualKeyboardMapper = function(formId, inputId){
     let oldText = ''
     // let sentText = '' (native keyboard 0.2)
     let isBackspace = false, isEnter = false,
-        isSpace = false, preventKeyUp = false
+        isSpace = false, preventKeyUp = false,
+        cleanInKeyUp = false
     
     form.addEventListener('submit', ev=>{
         ev.preventDefault()
@@ -38,8 +39,10 @@ let VirtualKeyboardMapper = function(formId, inputId){
         if(typeof ins.onsubmit === 'function')
             ins.onsubmit(data, isKey)
 
-        if(clean_)
+        if(clean_){
             clean()
+            cleanInKeyUp = true
+        }
     } 
     
     input.addEventListener('keydown', function(ev){
@@ -69,12 +72,17 @@ let VirtualKeyboardMapper = function(formId, inputId){
             else
                 onsubmit_(VirtualKeyboardMapper.SPACE, true, true)
         }
-    })
+    }) 
     
     input.addEventListener('keyup', function(ev){
+        if(cleanInKeyUp){
+            this.value = ''
+            cleanInKeyUp = false
+        }
+            
         if(preventKeyUp)
             return
-
+ 
         let newText = ''
         let length = this.value.length - oldText.length
 
