@@ -161,8 +161,10 @@ let Touchpad = function(touchpadId){
             isScrolling = false
         } 
         else if(ev.touches.length == 1){
-            if(prediction & PR_SCROLL)
+            if(prediction & PR_SCROLL && isScrolling){
+                isScrolling = false
                 lastPosTouches.reset()
+            }
             prediction ^= PR_SCROLL
         }
         // Touched with 3 touches previously
