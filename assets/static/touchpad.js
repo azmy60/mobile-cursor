@@ -11,7 +11,7 @@
  * 
  * -Move-       is when the user touch and move without leaving the touchpad.
  * 
- * -Scroll-     is when the user touches with 2 or 3 fingers, and move up and down with 2 fingers horizontally parallel.
+ * -Scroll-     is when the user touches with 2 or 3 fingers, and move up and down with 2 fingers horizontally in parallel.
  * 
  * ---------
  * 
