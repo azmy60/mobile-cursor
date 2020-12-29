@@ -26,12 +26,22 @@ let Touchpad = function(touchpadId){
     
     let touchpad = document.getElementById(touchpadId)
     
-    touchpad.addEventListener('touchstart', onTouch, false)
-    touchpad.addEventListener('touchend', onLeave, false)
-    touchpad.addEventListener('touchcancel', onCancel, false)
-    touchpad.addEventListener('touchmove', onMove, false)
+    // how long it takes to leave after touching for triggering a tap 
+    const intervalTouchLeaveForSingleTap = 200
     
-    let lastTimeStartTouching = null, lastTimeEndTouch = null, lastTimeClickForDragging = null
+    // The time gap of the first finger that touches followed by the next one for triggering a touch 
+    const intervalMultiFingersForTouch = 100
+    
+    // Prediction code
+    const PR_NONE = 0x00, PR_LEFT = 0x01, PR_MIDDLE = 0x02, PR_RIGHT = 0x04
+    
+    touchpad.addEventListener('touchstart', onTouch, { passive: false })
+    touchpad.addEventListener('touchend', onLeave, { passive: false })
+    touchpad.addEventListener('touchcancel', onCancel, { passive: false })
+    touchpad.addEventListener('touchmove', onMove, { passive: false })
+    
+    let timeStartTouching = null, timeLeaving = null, lastTimeClickForDragging = null, 
+        prediction = PR_NONE
     let isDragging = false, isScrolling = false, readyToDrag = false
     let lastPosTouches = {
         x: -1,
@@ -97,64 +107,61 @@ let Touchpad = function(touchpadId){
     function onTouch(ev){
         ev.preventDefault()
         
+        const t = Date.now()
+        
          // one finger
         if(ev.touches.length == 1){
-            lastTimeStartTouching = Date.now()
-            
-            // if user initiated to start dragging recently
-            if(lastTimeClickForDragging != null
-            && lastTimeStartTouching - lastTimeClickForDragging < 200){
-//                _press()
-                lastTimeClickForDragging = null
-                isDragging = false
-                readyToDrag = true
-            }
+            timeStartTouching = t
+            prediction = PR_LEFT
         }
         else if(ev.touches.length == 2){
-            var t = Date.now()
-            if(t - lastTimeStartTouching < 100){
-                lastTimeStartTouching = t
+            if(t - timeStartTouching < intervalMultiFingersForTouch){
+                timeStartTouching = t
+                prediction = PR_RIGHT
+            }
+        }
+        else if(ev.touches.length == 3){
+            if(t - timeStartTouching < intervalMultiFingersForTouch){
+                timeStartTouching = t
+                prediction = PR_MIDDLE
             }
         }
     }
 
     function onLeave(ev){
-        // User has touched with 2 fingers, so now the touches.length is 1
-        if(ev.touches.length == 1)
-            lastTimeEndTouch = Date.now()
-        else if(ev.touches.length == 0){
-            if(isDragging){
-                _release()
-                isDragging = false
-                readyToDrag = false
-            }
-            else {
-                const t = Date.now()
-                if(lastTimeEndTouch == null){
-                    // One finger tap! because lastTimeEndTouch hasn't
-                    // been assigned to a value. We know lastTimeEndTouch
-                    // is set when ev.touches.length == 1
-                        
-                    lastTimeEndTouch = t
-                    if(lastTimeEndTouch - lastTimeStartTouching < 200){
-                        _click(Touchpad.LEFT)
-                        lastTimeClickForDragging = Date.now()
-                    }
-                    lastTimeEndTouch = null
-                }
-                else if(t - lastTimeEndTouch < 100){
-                    // Double fingers tap!
-                    
-                    lastTimeEndTouch = t
-                    if(lastTimeEndTouch - lastTimeStartTouching < 200){
-                        _click(Touchpad.RIGHT)
-                        lastTimeEndTouch = null
-                    }
-                }                
+        ev.preventDefault()
+        
+        const t = Date.now()
+        
+        console.log(ev)
+        
+        if(ev.touches.length == 0){
+            const t = Date.now()
+            
+            if(t - timeStartTouching < intervalTouchLeaveForSingleTap){
+                if(prediction & PR_LEFT)
+                    _click(Touchpad.LEFT)
+                else if(prediction & PR_RIGHT)
+                    _click(Touchpad.RIGHT)
+                
+                timeStartTouching = null
             }
             
             lastPosTouches.reset()
+            prediction = PR_NONE
+        } 
+        else if(ev.touches.length == 1){
+//            timeLeaving = t
         }
+        // Touched with 3 touches previously
+        else if(ev.touches.length == 2){
+            if((prediction & PR_MIDDLE) && t - timeStartTouching < intervalTouchLeaveForSingleTap){
+                _click(Touchpad.MIDDLE)
+                timeStartTouching = null
+            }
+        }
+//        else
+//            prediction = PR_NONE;
     }
 
     function onCancel(ev){
