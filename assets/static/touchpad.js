@@ -32,8 +32,11 @@ let Touchpad = function(touchpadId){
     // The time gap of the first finger that touches followed by the next one for triggering a touch 
     const intervalMultiFingersForTouch = 100
     
+    // The time gap from first tap to the second tap for predicting a drag
+    const intervalDoubleTapForDrag = 100
+    
     // Prediction code
-    const PR_NONE = 0x00, PR_LEFT = 0x01, PR_MIDDLE = 0x02, PR_RIGHT = 0x04
+    const PR_NONE = 0x00, PR_LEFT = 0x01, PR_MIDDLE = 0x02, PR_RIGHT = 0x04, PR_DRAG = 0x08
     
     touchpad.addEventListener('touchstart', onTouch, { passive: false })
     touchpad.addEventListener('touchend', onLeave, { passive: false })
@@ -111,8 +114,13 @@ let Touchpad = function(touchpadId){
         
          // one finger
         if(ev.touches.length == 1){
+            if(timeLeaving != null && t - timeLeaving < intervalDoubleTapForDrag){
+                prediction = PR_DRAG
+                timeLeaving = null
+            }
+            else
+                prediction = PR_LEFT
             timeStartTouching = t
-            prediction = PR_LEFT
         }
         else if(ev.touches.length == 2){
             if(t - timeStartTouching < intervalMultiFingersForTouch){
@@ -133,8 +141,6 @@ let Touchpad = function(touchpadId){
         
         const t = Date.now()
         
-        console.log(ev)
-        
         if(ev.touches.length == 0){
             const t = Date.now()
             
@@ -149,6 +155,10 @@ let Touchpad = function(touchpadId){
             
             lastPosTouches.reset()
             prediction = PR_NONE
+            timeLeaving = t
+            if(isDragging)
+                _release()
+            isDragging = false
         } 
         else if(ev.touches.length == 1){
 //            timeLeaving = t
@@ -170,11 +180,13 @@ let Touchpad = function(touchpadId){
 
     function onMove(ev){
         if(ev.touches.length == 1){
-            if(readyToDrag){
+            if(prediction & PR_DRAG){
                 _press()
-                readyToDrag = false
                 isDragging = true
             }
+            
+            prediction = PR_NONE
+            
             var t = Date.now()
             var d = lastPosTouches.dist(ev, t)
             
