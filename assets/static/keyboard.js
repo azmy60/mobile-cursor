@@ -27,7 +27,7 @@ let VirtualKeyboardMapper = function(formId, inputId){
         return !s_ || !s_.trim()
     }
     
-    function clean(){
+    this.clean = function(){
         oldText = ''
         isBackspace = false
         isEnter = false
@@ -40,7 +40,7 @@ let VirtualKeyboardMapper = function(formId, inputId){
             ins.onsubmit(data, isKey)
 
         if(clean_){
-            clean()
+            ins.clean()
             cleanInKeyUp = true
         }
     } 
@@ -98,7 +98,7 @@ let VirtualKeyboardMapper = function(formId, inputId){
     
     // Open keyboard
     this.open = function(){
-        clean()
+        this.clean()
         input.focus()
     }
     
