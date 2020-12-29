@@ -49,7 +49,7 @@ let VirtualKeyboardMapper = function(formId, inputId){
 
         preventKeyUp = isBackspace || isSpace || isEnter 
 
-        if(isBackspace)
+        if(isBackspace) 
             onsubmit_(VirtualKeyboardMapper.BACKSPACE, true)
         else if(isEnter){
             if(oldText){
@@ -63,6 +63,8 @@ let VirtualKeyboardMapper = function(formId, inputId){
         }
         else if(isSpace){
             if(oldText == '' && !ins.submitWhenPressSpace)
+                return
+            else if(!isNullOrWhitespace(input.value))
                 return
             onsubmit_(VirtualKeyboardMapper.SPACE, true, true)
         }
