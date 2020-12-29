@@ -100,11 +100,6 @@ let Touchpad = function(touchpadId){
             ins.onmove(x, y)
     }
     
-//    function _dblclick(){
-//        if(typeof this.ondblclick == 'function')
-//            this.ondblclick()
-//    }
-
     function _scroll(direction){
         if(typeof ins.onscroll == 'function')
             ins.onscroll(direction)
@@ -166,7 +161,6 @@ let Touchpad = function(touchpadId){
             isScrolling = false
         } 
         else if(ev.touches.length == 1){
-//            timeLeaving = t
             if(prediction & PR_SCROLL)
                 lastPosTouches.reset()
             prediction ^= PR_SCROLL
@@ -178,8 +172,6 @@ let Touchpad = function(touchpadId){
                 timeStartTouching = null
             }
         }
-//        else
-//            prediction = PR_NONE;
     }
 
     function onCancel(ev){
@@ -238,9 +230,6 @@ let Touchpad = function(touchpadId){
     
     // Event that is called when the user tap the touchpad
     this.onclick = null
-    
-    // Event that is called when the user tap the touchpad
-//    this.ondblclick = null
     
     // Event that is called when the user drags with one finger 
     this.onmove = null
