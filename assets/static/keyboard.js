@@ -65,7 +65,7 @@ let VirtualKeyboardMapper = function(formId, inputId){
             if(oldText == '' && !ins.submitWhenPressSpace)
                 return
             else if(!isNullOrWhitespace(input.value) && ins.submitWhenPressSpace)
-                onsubmit_(input.value, false, true)
+                onsubmit_(input.value + ' ', false, true)
             else
                 onsubmit_(VirtualKeyboardMapper.SPACE, true, true)
         }
