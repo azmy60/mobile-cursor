@@ -105,8 +105,6 @@ let Touchpad = function(touchpadId){
     }
 
     function onTouch(ev){
-        ev.preventDefault()
-        
         const t = Date.now()
         
          // one finger
@@ -135,8 +133,6 @@ let Touchpad = function(touchpadId){
     }
 
     function onLeave(ev){
-        ev.preventDefault()
-        
         const t = Date.now()
         
         if(ev.touches.length == 0){
