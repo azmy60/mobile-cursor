@@ -1,17 +1,12 @@
 'use strict';
 
 const p = document.getElementsByTagName('p')[0]
-//let touchpadEl = document.getElementById('touchpad')
 const reconnectWrapper = document.getElementById('reconnect-wrapper')
 const keyboardButton = document.getElementById('keyboard-button')
 const cancelKeyboardArea = document.getElementById('cancel-keyboard-area')
 const presentationRemote = document.getElementById('presentation-remote')
 const presentationButton = document.getElementById('presentation-button')
 
-//touchpadEl.addEventListener('touchstart', handleStart, false)
-//touchpadEl.addEventListener('touchend', handleEnd, false)
-//touchpadEl.addEventListener('touchcancel', handleCancel, false)
-//touchpadEl.addEventListener('touchmove', handleMove, false)
 cancelKeyboardArea.addEventListener('click', closeKeyboard, false)
 reconnectWrapper.addEventListener('click', connect, false)
 keyboardButton.addEventListener('click', openKeyboard, false)
@@ -19,126 +14,6 @@ presentationButton.addEventListener('click', switchRemote, false)
 
 const keyboard = new VirtualKeyboardMapper('keyboard-form', 'text-input')
 const touchpad = new Touchpad('touchpad');
-
-//var lastTimeStartTouch = -1, lastTimeEndTouch = -1, lastTimeClickForDragging = -1
-//var isDragging = false, isScrolling = false
-//var lastPosTouches = {
-//	x: -1,
-//	y: -1,
-//	t: -1,
-//	set: function(ev, t){
-//		this.x = ev.touches[0].screenX
-//		this.y = ev.touches[0].screenY
-//		this.t = t
-//	},
-//	dist: function(ev, t){
-//		status(this.t + ' : ' + t)
-//		if(this.t == -1){
-//			this.set(ev, t)
-//			return {x: 0, y: 0, t: 0}
-//		}
-//			
-//		else {
-//			return { 
-//				x: ev.touches[0].screenX - this.x,
-//				y: ev.touches[0].screenY - this.y,
-//				t: t - this.t
-//			}
-//		}
-//	},
-//	reset: function(){this.x = this.y = this.t = -1}
-//}
-//var accelProps = {
-//	a: 1.5,
-//	b: 4
-//}
-//
-//function handleStart(ev){
-//	//status('start')
-//	ev.preventDefault()
-//	if(ev.touches.length == 1) {
-//		lastTimeStartTouch = Date.now()
-//		if(lastTimeClickForDragging != -1 
-//		&& lastTimeStartTouch - lastTimeClickForDragging < 200){
-//			leftDown()
-//			lastTimeClickForDragging = -1
-//			isDragging = true
-//		}
-//	}
-//	else if(ev.touches.length == 2){
-//		var t = Date.now()
-//		if(t - lastTimeStartTouch < 100){
-//			lastTimeStartTouch = t
-//		}
-//	}
-//}
-//
-//function handleEnd(ev){
-//	//status('end')
-//	if(ev.touches.length == 1) lastTimeEndTouch = Date.now()
-//	else if(ev.touches.length == 0){
-//		var t = Date.now()
-//		if(lastTimeEndTouch == -1){
-//			// One finger tap! because lastTimeEndTouch hasn't
-//			// been assigned to its value before now. We know
-//			// lastTimeEndTouch is set when ev.touches.length == 1
-//				
-//			lastTimeEndTouch = t
-//			if(lastTimeEndTouch - lastTimeStartTouch < 200){
-//				leftClick()
-//				lastTimeClickForDragging = Date.now()
-//			}
-//			lastTimeEndTouch = -1
-//		}
-//		else if(t - lastTimeEndTouch < 100){
-//			// Double fingers tap!
-//			
-//			lastTimeEndTouch = t
-//			if(lastTimeEndTouch - lastTimeStartTouch < 200){
-//				rightClick()
-//				lastTimeEndTouch = -1
-//			}
-//		}
-//		
-//		if(isDragging){
-//			leftUp()
-//			isDragging = false
-//		}
-//		
-//		status('Resetting lastPosTouches')
-//		lastPosTouches.reset()
-//	}
-//}
-//
-//function handleCancel(ev){
-//	//status('cancel')
-//}
-//
-//function handleMove(ev){
-//	if(ev.touches.length == 1){
-//		var t = Date.now()
-//		if(isDragging){
-//			//leftDown()
-//			//lastTimeClickForDragging = -1
-//			//isDragging = true
-//		}
-//		
-//		var d = lastPosTouches.dist(ev, t)
-//		
-//		// Simulating Acceleration
-//		// https://stackoverflow.com/a/8773322/10012118
-//		
-//		var dr = Math.sqrt(d.x**2 + d.y**2)
-//		var v = dr/d.t
-//		var v_new = accelProps.a*v + accelProps.b*(v**2)
-//		var dr_new = v_new * d.t
-//		var dx_new = Math.round(d.x * (dr_new / dr))
-//		var dy_new = Math.round(d.y * (dr_new / dr))
-//		
-//		move(dx_new || 0, dy_new || 0)
-//		lastPosTouches.set(ev, t)
-//	}
-//}
 
 keyboard.onsubmit = (data, isKey)=>{
     if(isKey){
@@ -167,7 +42,6 @@ touchpad.onrelease = ()=>{
 }
 
 touchpad.onclick = (which)=>{
-    console.log(2)
     send(which)
 }
 
@@ -214,11 +88,9 @@ function connect(){
 		//var data = JSON.parse(event.data)
 	}
 	ws.onopen = event => {
-		status('Tersambung')
 		reconnectWrapper.style.display = 'none'
 	}
 	ws.onclose = event => {
-		status('Terputus')
 		reconnectWrapper.children[0].innerText = 'Sambungan Terputus. Tekan untuk menyambung ulang.'
 		reconnectWrapper.style.display = 'flex'
 		closeKeyboard()
@@ -283,6 +155,7 @@ function reload(){
 }
 
 function status(msg){
+    p.style.display = 'block'
 	p.innerText = msg
 }
 

@@ -11,7 +11,7 @@
  * 
  * -Move-       is when the user touch and move without leaving the touchpad.
  * 
- * -Scroll-     is when the user uses 2 fingers and move vertically.
+ * -Scroll-     is when the user touches with 2 or 3 fingers, and move up and down with 2 fingers horizontally in parallel.
  * 
  * ---------
  * 
@@ -26,12 +26,28 @@ let Touchpad = function(touchpadId){
     
     let touchpad = document.getElementById(touchpadId)
     
-    touchpad.addEventListener('touchstart', onTouch, false)
-    touchpad.addEventListener('touchend', onLeave, false)
-    touchpad.addEventListener('touchcancel', onCancel, false)
-    touchpad.addEventListener('touchmove', onMove, false)
+    // how long it takes to leave after touching for triggering a tap 
+    const intervalTouchLeaveForSingleTap = 200
     
-    let lastTimeStartTouching = null, lastTimeEndTouch = null, lastTimeClickForDragging = null
+    // The time gap of the first finger that touches followed by the next one for triggering a touch 
+    const intervalMultiFingersForTouch = 150
+    
+    // The time gap from first tap to the second tap for predicting a drag
+    const intervalDoubleTapForDrag = 150
+    
+    // The numbers to swipe to start scrolling
+    const intervalScroll = 10
+    
+    // Prediction code
+    const PR_NONE = 0x00, PR_LEFT = 0x01, PR_MIDDLE = 0x02, PR_RIGHT = 0x04, PR_DRAG = 0x08, PR_SCROLL = 0x10
+    
+    touchpad.addEventListener('touchstart', onTouch, { passive: false })
+    touchpad.addEventListener('touchend', onLeave, { passive: false })
+    touchpad.addEventListener('touchcancel', onCancel, { passive: false })
+    touchpad.addEventListener('touchmove', onMove, { passive: false })
+    
+    let timeStartTouching = null, timeStartClicking = null, lastTimeClickForDragging = null, swipeNum = 0,
+        prediction = PR_NONE
     let isDragging = false, isScrolling = false, readyToDrag = false
     let lastPosTouches = {
         x: -1,
@@ -43,7 +59,6 @@ let Touchpad = function(touchpadId){
             this.t = t
         },
         dist: function(ev, t){
-            status(this.t + ' : ' + t)
             if(this.t == -1){
                 this.set(ev, t)
                 return {x: 0, y: 0, t: 0}
@@ -65,95 +80,99 @@ let Touchpad = function(touchpadId){
     }
 
     function _press(){
-        if(this.onpress)
-            this.onpress()
+        if(typeof ins.onpress == 'function')
+            ins.onpress()
     }
     
     function _release(){
-        if(this.onrelease)
-            this.onrelease()
+        if(typeof ins.onrelease == 'function')
+            ins.onrelease()
     }
     
     function _click(which){
-        if(this.onclick)
-            this.onclick(which)
+        if(typeof ins.onclick == 'function')
+            ins.onclick(which)
     }
     
     function _move(x, y){
-        if(this.onmove)
-            this.onmove(x, y)
+        if(typeof ins.onmove == 'function')
+            ins.onmove(x, y)
     }
     
-//    function _dblclick(){
-//        if(typeof this.ondblclick == 'function')
-//            this.ondblclick()
-//    }
-
     function _scroll(direction){
-        if(this.onscroll)
-            this.onscroll(direction)
+        if(typeof ins.onscroll == 'function')
+            ins.onscroll(direction)
     }
 
     function onTouch(ev){
         ev.preventDefault()
         
+        const t = Date.now()
+        
          // one finger
         if(ev.touches.length == 1){
-            lastTimeStartTouching = Date.now()
-            
-            // if user initiated to start dragging recently
-            if(lastTimeClickForDragging != null
-            && lastTimeStartTouching - lastTimeClickForDragging < 200){
-//                _press()
-                lastTimeClickForDragging = null
-                isDragging = false
-                readyToDrag = true
+            if(timeStartClicking != null && t - timeStartClicking < intervalDoubleTapForDrag){
+                prediction = PR_DRAG
+                timeStartClicking = null
             }
+            prediction |= PR_LEFT
+            timeStartTouching = t
         }
         else if(ev.touches.length == 2){
-            var t = Date.now()
-            if(t - lastTimeStartTouching < 100){
-                lastTimeStartTouching = t
+            if(t - timeStartTouching < intervalMultiFingersForTouch){
+                prediction = PR_RIGHT
+                timeStartTouching = t
             }
+            prediction |= PR_SCROLL
+        }
+        else if(ev.touches.length == 3){
+            if(t - timeStartTouching < intervalMultiFingersForTouch){
+                prediction = PR_MIDDLE
+                timeStartTouching = t
+            }
+            prediction |= PR_SCROLL
         }
     }
 
     function onLeave(ev){
-        // User has touched with 2 fingers, so now the touches.length is 1
-        if(ev.touches.length == 1)
-            lastTimeEndTouch = Date.now()
-        else if(ev.touches.length == 0){
-            if(isDragging){
-                _release()
-                isDragging = false
-                readyToDrag = false
-            }
-            else {
-                const t = Date.now()
-                if(lastTimeEndTouch == null){
-                    // One finger tap! because lastTimeEndTouch hasn't
-                    // been assigned to a value. We know lastTimeEndTouch
-                    // is set when ev.touches.length == 1
-                        
-                    lastTimeEndTouch = t
-                    if(lastTimeEndTouch - lastTimeStartTouching < 200){
-                        _click(Touchpad.LEFT)
-                        lastTimeClickForDragging = Date.now()
-                    }
-                    lastTimeEndTouch = null
+        ev.preventDefault()
+        
+        const t = Date.now()
+        
+        if(ev.touches.length == 0){
+            const t = Date.now()
+            
+            if(!isScrolling && t - timeStartTouching < intervalTouchLeaveForSingleTap){
+                if(prediction & PR_LEFT){
+                    _click(Touchpad.LEFT)
+                    timeStartClicking = t
                 }
-                else if(t - lastTimeEndTouch < 100){
-                    // Double fingers tap!
-                    
-                    lastTimeEndTouch = t
-                    if(lastTimeEndTouch - lastTimeStartTouching < 200){
-                        _click(Touchpad.RIGHT)
-                        lastTimeEndTouch = null
-                    }
-                }                
+                else if(prediction & PR_RIGHT)
+                    _click(Touchpad.RIGHT)
             }
             
+            timeStartTouching = null
+            
             lastPosTouches.reset()
+            prediction = PR_NONE
+            if(isDragging)
+                _release()
+            isDragging = false
+            isScrolling = false
+        } 
+        else if(ev.touches.length == 1){
+            if(prediction & PR_SCROLL && isScrolling){
+                isScrolling = false
+                lastPosTouches.reset()
+            }
+            prediction ^= PR_SCROLL
+        }
+        // Touched with 3 touches previously
+        else if(ev.touches.length == 2){
+            if((prediction & PR_MIDDLE) && t - timeStartTouching < intervalTouchLeaveForSingleTap){
+                _click(Touchpad.MIDDLE)
+                timeStartTouching = null
+            }
         }
     }
 
@@ -162,26 +181,46 @@ let Touchpad = function(touchpadId){
     }
 
     function onMove(ev){
+        const t = Date.now()
+        
         if(ev.touches.length == 1){
-            if(readyToDrag){
+            if(prediction & PR_DRAG){
                 _press()
-                readyToDrag = false
                 isDragging = true
             }
-            var t = Date.now()
-            var d = lastPosTouches.dist(ev, t)
+            
+            prediction = PR_NONE
+            
+            let d = lastPosTouches.dist(ev, t)
             
             // Simulating Acceleration
             // https://stackoverflow.com/a/8773322/10012118
             
-            var dr = Math.sqrt(d.x**2 + d.y**2)
-            var v = dr/d.t
-            var v_new = accelProps.a*v + accelProps.b*(v**2)
-            var dr_new = v_new * d.t
-            var dx_new = Math.round(d.x * (dr_new / dr))
-            var dy_new = Math.round(d.y * (dr_new / dr))
+            let dr = Math.sqrt(d.x**2 + d.y**2)
+            let v = dr/d.t
+            let v_new = accelProps.a*v + accelProps.b*(v**2)
+            let dr_new = v_new * d.t
+            let dx_new = Math.round(d.x * (dr_new / dr))
+            let dy_new = Math.round(d.y * (dr_new / dr))
             
             _move(dx_new || 0, dy_new || 0)
+            lastPosTouches.set(ev, t)
+        }
+        else if(ev.touches.length < 4 && (prediction & PR_SCROLL)){
+            isScrolling = true
+            
+            const y = lastPosTouches.dist(ev, t).y / 1.5
+            const y_new = y > 0 ? Math.ceil(y) : Math.floor(y)
+            
+            swipeNum += Math.abs(y_new)
+            
+            if(swipeNum > intervalScroll){
+                const amount = Math.floor(swipeNum / intervalScroll)
+                    for(let i = 0; i < amount; i++)
+                        _scroll(y_new > 0 ? Touchpad.SCROLLUP : Touchpad.SCROLLDOWN)
+                swipeNum -= intervalScroll * amount
+            }
+            
             lastPosTouches.set(ev, t)
         }
     }
@@ -194,9 +233,6 @@ let Touchpad = function(touchpadId){
     
     // Event that is called when the user tap the touchpad
     this.onclick = null
-    
-    // Event that is called when the user tap the touchpad
-//    this.ondblclick = null
     
     // Event that is called when the user drags with one finger 
     this.onmove = null
