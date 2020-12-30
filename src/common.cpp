@@ -53,10 +53,9 @@ namespace mobilecursor
         {
             std::string content_type = "text/plain";
             auto ext = boost::filesystem::extension(filename);
-            std::cout << ext << std::endl;
             auto mime = ext_to_mime.find(ext);
             if(mime != ext_to_mime.end())
-                content_type = mime->first;
+                content_type = mime->second;
             
             auto length = ifs->tellg();
             ifs->seekg(0, std::ios::beg);
