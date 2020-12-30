@@ -1,0 +1,18 @@
+<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
+<svg xmlns="http://www.w3.org/2000/svg">
+<defs>
+    <font id="remixicon" horiz-adv-x="1200">
+    <font-face font-family="remixicon"
+        units-per-em="1200" ascent="1200"
+        descent="0" />
+    <missing-glyph horiz-adv-x="0" /><glyph glyph-name="arrow-left-s-line"
+            unicode="&#xEA64;"
+            horiz-adv-x="1200" d="M541.4 600L788.9 352.5L718.1999999999999 281.8L400 600L718.2 918.2L788.9 847.5z" /><glyph glyph-name="arrow-right-s-line"
+            unicode="&#xEA6E;"
+            horiz-adv-x="1200" d="M658.6 600L411.1000000000001 847.5L481.8000000000001 918.2L800 600L481.8 281.8L411.1 352.5z" /><glyph glyph-name="cursor-fill"
+            unicode="&#xEC09;"
+            horiz-adv-x="1200" d="M695.5 582L850 157.3L709.1 106L554.5 530.7L345.9000000000001 372.9000000000001L420.4 1118.3500000000001L956.7 595.2000000000002z" /><glyph glyph-name="slideshow-3-fill"
+            unicode="&#xF153;"
+            horiz-adv-x="1200" d="M650 300V200H850V100H350V200H550V300H150A50 50 0 0 0 100 350V1000A50 50 0 0 0 150 1050H1050A50 50 0 0 0 1100 1000V350A50 50 0 0 0 1050 300H650zM500 825V525L750 675L500 825z" /><glyph glyph-name="keyboard-box-line"
+            unicode="&#xEE73;"
+            horiz-adv-x="1200" d="M200 950V250H1000V950H200zM150 1050H1050A50 50 0 0 0 1100 1000V200A50 50 0 0 0 1050 150H150A50 50 0 0 0 100 200V1000A50 50 0 0 0 150 1050zM300 850H400V750H300V850zM300 650H400V550H300V650zM300 450H900V350H300V450zM550 650H650V550H550V650zM550 850H650V750H550V850zM800 850H900V750H800V850zM800 650H900V550H800V650z" /></font></defs></svg>
