@@ -16,6 +16,7 @@ namespace mobilecursor
         {".html", "text/html"},
         {".js", "application/javascript"},
         {".json", "application/json"},
+        {".svg", "image/svg+xml"},
         {".png", "image/png"},
         {".webp", "image/webp"}
     };
