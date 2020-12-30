@@ -17,3 +17,5 @@ Control the desktop with a mobile browser locally.
 - Presentation remote
 - Window management
 - Windows and macOS support
+
+I use Remix Icon for the most icons in this project. See remixicon.com
