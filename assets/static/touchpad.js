@@ -26,8 +26,11 @@ let Touchpad = function(touchpadId){
     
     let touchpad = document.getElementById(touchpadId)
     
-    // how long it takes to leave after touching for triggering a tap 
+    // how long it takes to leave after touching for initiating a trigger to tap 
     const intervalTouchLeaveForSingleTap = 200
+    
+    // how long it takes to not touch after leaving for triggering a tap/click 
+    const intervalTouchLeaveForClick = 120
     
     // The time gap of the first finger that touches followed by the next one for triggering a touch 
     const intervalMultiFingersForTouch = 150
@@ -39,7 +42,7 @@ let Touchpad = function(touchpadId){
     const intervalScroll = 10
     
     // Prediction code
-    const PR_NONE = 0x00, PR_LEFT = 0x01, PR_MIDDLE = 0x02, PR_RIGHT = 0x04, PR_DRAG = 0x08, PR_SCROLL = 0x10
+    const PR_NONE = 0x00, PR_LEFT = 0x01, PR_MIDDLE = 0x02, PR_RIGHT = 0x04, PR_SCROLL = 0x08
     
     touchpad.addEventListener('touchstart', onTouch, { passive: false })
     touchpad.addEventListener('touchend', onLeave, { passive: false })
@@ -109,11 +112,14 @@ let Touchpad = function(touchpadId){
         
          // one finger
         if(ev.touches.length == 1){
-            if(timeStartClicking != null && t - timeStartClicking < intervalDoubleTapForDrag){
-                prediction = PR_DRAG
+            if(timeStartClicking != null && t - timeStartClicking < intervalTouchLeaveForClick){
+                isDragging = true
+                prediction = PR_NONE
                 timeStartClicking = null
+                _press()
             }
-            prediction |= PR_LEFT
+            else
+                prediction |= PR_LEFT
             timeStartTouching = t
         }
         else if(ev.touches.length == 2){
@@ -140,7 +146,12 @@ let Touchpad = function(touchpadId){
             
             if(!isScrolling && t - timeStartTouching < intervalTouchLeaveForSingleTap){
                 if(prediction & PR_LEFT){
-                    _click(Touchpad.LEFT)
+                    setTimeout(()=>{
+                        if(!isDragging)
+                            _click(Touchpad.LEFT)
+                    },
+                    intervalTouchLeaveForClick)
+                    
                     timeStartClicking = t
                 }
                 else if(prediction & PR_RIGHT)
@@ -180,11 +191,6 @@ let Touchpad = function(touchpadId){
         const t = Date.now()
         
         if(ev.touches.length == 1){
-            if(prediction & PR_DRAG){
-                _press()
-                isDragging = true
-            }
-            
             prediction = PR_NONE
             
             let d = lastPosTouches.dist(ev, t)
