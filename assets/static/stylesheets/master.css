@@ -10,6 +10,14 @@ html, body {
   text-align: center;
 }
 
+.unselectable{
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+}
+
 .wrapper {
   padding: 1em;
 }
@@ -26,40 +34,42 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(#343434, #202020);
+  background: linear-gradient(#202020, #333);
 }
 
-#keyboard-button > img {
-  width: 25%;
-  opacity: .2;
+#keyboard-button > .icon {
+  width: 5em;
+  fill: #ffffffd9;
 }
 
 #presentation-button{
   position: absolute;
   right: 0;
   top: 0;
-  width: 3em;
-  height: 3em;
-  border-radius: 50%;
-  background: linear-gradient(#343434, #232323);
+  width: 3.4em;
+  height: 3.4em;
+  border-radius: 22px;
+  background: linear-gradient(145deg, #202020, #252525);
+  box-shadow:  3px 3px 7px #131313,
+             -3px -3px 7px #333333;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-#presentation-button > img{
-  opacity: .2;
+#presentation-button > .icon{
+  width: 40%;
+  fill: #ffffffd9;
 }
 
 #presentation-icon{
-  width: 1.4em;
   display: block;
 }
 
 #cursor-icon{
   display: none;
-  width: 1.1em;
-  padding-left: 0.2em;
+  width: 50% !important;
+  padding-left: 0.12em;
 }
 
 #the-keyboard {
@@ -113,36 +123,43 @@ html, body {
   position: absolute;
   width: 12em;
   height: 12em;
-  border-radius: 50%;
   left: 50%;
   top: 43%;
   margin-left:-6em;
   margin-top:-6em;
-  background: linear-gradient(#434343, #2b2b2b);
+  border: 2px solid #ffffffc0;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #202020, #252525);
+  box-shadow:  5px 5px 14px #111111,
+             -5px -5px 14px #353535;
 }
 
 #back-button{
   position: absolute;
-  width: 4em;
-  height: 4em;
-  border-radius: 50%;
-  left: 91%;
-  top: 66%;
-  margin-left:-4em;
-  margin-top:-4em;
-  background: linear-gradient(#434343, #2b2b2b);
+  width: 6em;
+  height: 6em;
+  left: 50%;
+  top: 70%;
+  margin-left:-3em;
+  margin-top:-3em;
+  border-radius: 50px;
+  background: linear-gradient(145deg, #202020, #252525);
+  box-shadow:  5px 5px 10px #111111,
+             -5px -5px 10px #353535;
 }
 
-#next-button > img, #back-button > img{
-  width: 25%;
-  opacity: .2;
+#next-button > .icon, #back-button > .icon{
+  
+  fill: #ffffffe6;
 }
 
-#next-button > img{
+#next-button > .icon{
+  width: 45% !important;
   margin-left: 0.5em;
 }
 
-#back-button > img{
+#back-button > .icon{
+  width: 60% !important;
   margin-left: -0.2em;
 }
 
@@ -150,19 +167,6 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-
-#exit-button{
-  position: absolute;
-  width: 4em;
-  height: 4em;
-  border-radius: 50%;
-  left: 8%;
-  top: 66%;
-  margin-left:0;
-  margin-top:-4em;
-  background: linear-gradient(#734343, #5b2b2b);
 }
 
 #headline {

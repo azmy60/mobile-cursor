@@ -8,28 +8,42 @@
 </head>
 <body>
   <p style="display: none;"></p>
-  <div id="touchpad" style="touch-action: none;"></div>
-  <div id="keyboard-button">
-  	<img src="/static/images/keyboard-box-fill.svg"></img>
-  </div>
-  <div id="presentation-remote" style="display:none;">
-    <div id="pointer-button"></div>
-  	<div id="next-button"><img src="/static/images/arrow-right-s-line.svg"></div>
-  	<div id="back-button"><img src="/static/images/arrow-left-s-line.svg"></div>
-  	<div id="small-touchpad-button"></div>
-  	<div id="small-touchpad"></div>
-  </div>
-  <div style="position:absolute;right:1.2em;top:1.2em;" onclick="switchRemote">
-  	<div id="presentation-button">
-  		<img id="presentation-icon"src="/static/images/slideshow-3-fill.svg"></img>
-  		<img id="cursor-icon" src="/static/images/cursor-fill.svg"></img>
-  	</div>
+  <div id="touchpad" style="touch-action: none;" class="unselectable"></div>
+  <div id="keyboard-button" class="unselectable">
+    <svg class="icon">
+      <use xlink:href="/static/icons/remixicon.symbol.svg#keyboard-box-line"></use>
+    </svg>
   </div>
   <form id="keyboard-form">
   	<input id="text-input"></input>
   </form>
-  <div id="cancel-keyboard-area"><p>Ketuk dimana saja untuk keluar.</p></div>
-  <div id="reconnect-wrapper">
+  <div id="presentation-remote" style="display:none;">
+    <div id="pointer-button" class="unselectable"></div>
+  	<div id="next-button" class="unselectable">
+        <svg class="icon">
+          <use xlink:href="/static/icons/remixicon.symbol.svg#arrow-right-s-line"></use>
+        </svg>
+    </div>
+  	<div id="back-button" class="unselectable">
+        <svg class="icon">
+          <use xlink:href="/static/icons/remixicon.symbol.svg#arrow-left-s-line"></use>
+        </svg>
+    </div>
+  	<div id="small-touchpad-button" class="unselectable"></div>
+  	<div id="small-touchpad" class="unselectable"></div>
+  </div>
+  <div style="position:absolute;right:1.2em;top:1.2em;" onclick="switchRemote">
+  	<div id="presentation-button" class="unselectable">
+        <svg id="presentation-icon" class="icon unselectable">
+          <use xlink:href="/static/icons/remixicon.symbol.svg#slideshow-3-fill"></use>
+        </svg>
+        <svg id="cursor-icon" class="icon unselectable">
+          <use xlink:href="/static/icons/remixicon.symbol.svg#cursor-fill"></use>
+        </svg>
+  	</div>
+  </div>
+  <div id="cancel-keyboard-area" class="unselectable"><p>Ketuk dimana saja untuk keluar.</p></div>
+  <div id="reconnect-wrapper" class="unselectable">
   	<p>Sambungan Terputus. Ketuk untuk menyambung ulang.</p>
   </div>
   <script src="/static/touchpad.js"></script>
