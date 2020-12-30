@@ -8,17 +8,14 @@
 </head>
 <body>
   <p style="display: none;"></p>
-  <button onclick="disconnect()" style="display: none;">Disconnect</button>
-  <!--<button onclick="disconnect()">disconnect</button>
-  <button onclick="reload()">reload</button>-->
   <div id="touchpad" style="touch-action: none;"></div>
   <div id="keyboard-button">
   	<img src="/static/images/computer-keyboard-wireless.png"></img>
   </div>
   <div id="presentation-remote" style="display:none;">
-  	<div id="next-button" onclick="send({type: 'key', key:'right'})"><img src="/static/images/line-angle-right.png"></img></div>
-  	<div id="back-button" onclick="send({type: 'key', key:'left'})"><img src="/static/images/line-angle-left.png"></img></div>
-  	<div id="exit-button" onclick="send({type: 'key', key:'escape'})"></div>
+    <div id="pointer-button"></div>
+  	<div id="next-button"><img src="/static/images/arrow-right-s-line.svg"></div>
+  	<div id="back-button"><img src="/static/images/arrow-left-s-line.svg"></div>
   	<div id="small-touchpad-button"></div>
   	<div id="small-touchpad"></div>
   </div>
@@ -34,7 +31,6 @@
   <div id="cancel-keyboard-area"><p>Ketuk dimana saja untuk keluar.</p></div>
   <div id="reconnect-wrapper">
   	<p>Sambungan Terputus. Ketuk untuk menyambung ulang.</p>
-  	<!--<img src="/static/images/redo-arrow.png" id="reconnect"></img>-->
   </div>
   <script src="/static/touchpad.js"></script>
   <script src="/static/keyboard.js"></script>
