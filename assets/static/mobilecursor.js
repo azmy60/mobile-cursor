@@ -77,7 +77,6 @@ function switchRemote(){
 	presentationRemote.style.display = toPresentation ? 'block' : 'none'
 	presentationButton.children[0].style.display = !toPresentation ? 'block' : 'none'
 	presentationButton.children[1].style.display = toPresentation ? 'block' : 'none'
-	console.log(presentationRemote)
 }
 
 function connect(){
