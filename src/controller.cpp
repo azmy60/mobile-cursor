@@ -95,6 +95,22 @@ void controller::handle_event(std::string &event)
         }
     break;
     
+    case LEFT_ARROW:
+        aluspointer::tap_key(aluspointer::XK_Left);
+    break;
+    
+    case UP_ARROW:
+        aluspointer::tap_key(aluspointer::XK_Up);
+    break;
+    
+    case RIGHT_ARROW:
+        aluspointer::tap_key(aluspointer::XK_Right);
+    break;
+    
+    case DOWN_ARROW:
+        aluspointer::tap_key(aluspointer::XK_Down);
+    break;
+    
     default:
         if(type >= TAP_ASCII && type < TAP_ASCII + 127)
         {

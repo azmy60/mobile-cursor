@@ -6,11 +6,18 @@ const keyboardButton = document.getElementById('keyboard-button')
 const cancelKeyboardArea = document.getElementById('cancel-keyboard-area')
 const presentationRemote = document.getElementById('presentation-remote')
 const presentationButton = document.getElementById('presentation-button')
+const pointerButton = document.getElementById('pointer-button') // TODO
+const nextButton = document.getElementById('next-button')
+const backButton = document.getElementById('back-button')
 
 cancelKeyboardArea.addEventListener('click', closeKeyboard, false)
 reconnectWrapper.addEventListener('click', connect, false)
 keyboardButton.addEventListener('click', openKeyboard, false)
 presentationButton.addEventListener('click', switchRemote, false)
+nextButton.addEventListener('click', ()=>send(144), false)
+backButton.addEventListener('click', ()=>send(142), false)
+pointerButton.addEventListener('click', ()=>{}, false) // TODO
+
 
 const keyboard = new VirtualKeyboardMapper('keyboard-form', 'text-input')
 const touchpad = new Touchpad('touchpad');
@@ -64,14 +71,6 @@ function closeKeyboard(){
     keyboard.close()
 }
 
-function openPresentationRemote(){
-	
-}
-
-function openPresentationRemote(){
-	
-}
-
 function switchRemote(){
 	var toPresentation = presentationRemote.style.display == 'none' 
 	presentationRemote.style.display = toPresentation ? 'block' : 'none'
@@ -116,11 +115,11 @@ function int12(n){
  * (mouse move 12-bit)  :   | Type (1 byte) | xxxxxxxx | xxxxyyyy | yyyyyyyy |
  * (string)             :   | Type (1 byte) | data     |
  * 
- * The types are:   000 Left Click     007 Middle Down            141 String
- *                  001 Right Click    008 Middle Up
- *                  002 Middle Click   009 Scroll Down
- *                  003 Left Down      010 Scroll Up
- *                  004 Left Up        011-138 Tap ASCII Code
+ * The types are:   000 Left Click     007 Middle Down              141 String
+ *                  001 Right Click    008 Middle Up                142 Left Arrow
+ *                  002 Middle Click   009 Scroll Down              143 Up Arrow
+ *                  003 Left Down      010 Scroll Up                144 Right Arrow
+ *                  004 Left Up        011-138 Tap ASCII Code       145 Down Arrow
  *                  005 Right Down     139 Mouse Move (8-bit)
  *                  006 Right Up       140 Mouse Move (16-bit)
  *
@@ -133,10 +132,10 @@ function send(type, data1, data2){
         buffer = new Uint8Array([type, data1, data2]);
     else if(type == 140)
         buffer = new Uint8Array([type, data1 >> 8, data1 & 255, data2 >> 8, data2 & 255]);
-    else if(type <= 138)
-        buffer = new Uint8Array([type]);
-    else //if(type >= 141)
+    else if(type == 141)
         buffer = new Blob([new Uint8Array([type]), data1], {type: 'text/plain'})
+    else
+        buffer = new Uint8Array([type]);
     
     ws.send(buffer);
 }

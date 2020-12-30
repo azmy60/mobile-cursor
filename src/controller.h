@@ -13,7 +13,8 @@ namespace mobilecursor
             LEFTDOWN, LEFTUP, RIGHTDOWN, RIGHTUP,
             MIDDLEDOWN, MIDDLEUP, SCROLLDOWN, SCROLLUP,
             TAP_ASCII, MOUSEMOVE8 = 139, MOUSEMOVE16,
-            STRING
+            STRING, LEFT_ARROW, UP_ARROW, RIGHT_ARROW,
+            DOWN_ARROW
         };
         void handle_event(std::string &event);
     };
