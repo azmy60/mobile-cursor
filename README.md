@@ -1,4 +1,4 @@
-# mobile-cursor 
+# Mobile Cursor
 
 Control the desktop with a mobile browser locally.
 
