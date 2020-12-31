@@ -4,8 +4,8 @@ Control the desktop with a mobile browser locally.
 
 ### Features
 - Touchpad
-- Native soft keyboard with autocorrect
-- Unicode input (Emojis, different languages, etc.)
+- Full soft native keyboard support (including autocorrect, emojis, etc.)
+- Presentation remote
 
 ### Dependencies
 - [aluspointer](https://github.com/azmy60/aluspointer)
@@ -14,7 +14,6 @@ Control the desktop with a mobile browser locally.
 - [tiny-utf8](https://github.com/DuffsDevice/tiny-utf8)
 
 ### TODO
-- Presentation remote
 - Window management
 - Windows and macOS support
 
