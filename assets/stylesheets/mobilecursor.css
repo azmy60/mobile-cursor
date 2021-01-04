@@ -152,11 +152,12 @@ screen main #fragment-windows #wrapper-thumbnail-list {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   text-align: left;
 }
 
-screen main #fragment-windows #wrapper-thumbnail-list .thumbnail-window {
+screen main #fragment-windows #wrapper-thumbnail-list thumbnail {
   margin-top: 2.5em;
   width: 100%;
   display: -ms-grid;
@@ -164,14 +165,19 @@ screen main #fragment-windows #wrapper-thumbnail-list .thumbnail-window {
   gap: 0.5em;
 }
 
-screen main #fragment-windows #wrapper-thumbnail-list .thumbnail-window .thumbnail-image-wrapper {
+screen main #fragment-windows #wrapper-thumbnail-list thumbnail thumbnail-wrapper-image {
   width: 100%;
   background-color: black;
   text-align: center;
 }
 
-screen main #fragment-windows #wrapper-thumbnail-list .thumbnail-window .title {
+screen main #fragment-windows #wrapper-thumbnail-list thumbnail thumbnail-wrapper-image img {
+  width: 100%;
+}
+
+screen main #fragment-windows #wrapper-thumbnail-list thumbnail .title {
   font-weight: bold;
+  color: whitesmoke;
 }
 
 screen main #fragment-presentation-remote {

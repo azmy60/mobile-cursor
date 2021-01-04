@@ -19,6 +19,8 @@ const fragmentRemotePresentation = document.getElementById('fragment-presentatio
 const main = document.getElementsByTagName("main")[0];
 const nav = document.getElementsByTagName("nav")[0];
 
+const poolThumbnail = document.getElementById("pool-thumbnail")
+
 btnPresentation.addEventListener('click', goToPresentation, false)
 btnTouchpad.addEventListener('click', goToTouchpad, false)
 btnWindows.addEventListener('click', goToWindows, false)
@@ -106,6 +108,8 @@ function goToWindows(){
     btnTouchpad.classList.remove('focused')
     btnWindows.classList.add('focused')
     btnPresentation.classList.remove('focused')
+
+    refreshPoolThumbnail()
 }
 
 function goToPresentation(){
@@ -205,19 +209,85 @@ function status(msg){
 	p.innerText = msg
 }
 
+function refreshPoolThumbnail(){
+    fetch('/upd')
+        .then(resp => resp.json())
+        .then(data => {
+            if(!data.length)
+                return
+            
+            let r = data.length - poolThumbnail.childElementCount
+        
+            while(r > 0) {
+                poolThumbnail.appendChild(createThumbnail())
+                r--
+            }
+        
+            r = 0
+            while(r < data.length) {
+                modifyThumbnail(poolThumbnail.children[r], r, data[r].name)
+                r++
+            }
+        })
+        .catch() // TODO
+}
+
+function requestImage(img, id){
+    fetch(`/winimg/${id}`)
+        .then(resp=>resp.text())
+        .then(data=>img.src = data)
+        .catch() // TODO store dummy instead
+}
+
+function createThumbnail(){
+    const thumbnail = document.createElement('thumbnail')
+    thumbnail.win_id_ = null
+    // thumbnail.isFree_ = true
+    thumbnail.onclick = function(){
+        if(this.win_id_ != null)
+            toggleWindow(this.win_id_)
+    }
+
+    const thumbnailWrapperImage = document.createElement('thumbnail-wrapper-image')
+    thumbnail.img_ = new Image();
+
+    thumbnail.span_ = document.createElement('span')
+    thumbnail.span_.classList.add('title')
+
+    thumbnailWrapperImage.appendChild(thumbnail.img_)
+    thumbnail.appendChild(thumbnailWrapperImage)
+    thumbnail.appendChild(thumbnail.span_)
+
+    return thumbnail
+}
+
+function modifyThumbnail(thumbnail, id, title){
+    // if(!thumbnail.isFree_)
+    //     return false
+
+    thumbnail.win_id_ = id
+    // thumbnail.isFree_ = false
+    
+    requestImage(thumbnail.img_, id)
+
+    thumbnail.span_.textContent = title
+    thumbnail.style.display = 'block'
+    
+    return true
+}
+
+// function freeThumbnail(thumbnail){
+//     thumbnail.style.display = 'none'
+//     thumbnail.span_.textContent = ''
+//     thumbnail.img_.src = ''
+//     thumbnail.isFree_ = true
+// }
+
 connect()
 keyboard.clean()
 
-function docReady(fn){
-    if(document.readyState === "complete" || document.readyState == "interactive"){
-        setTimeout(fn, 1)
-    } else {
-        document.addEventListener("DOMContentLoad", fn)
-    }
-}
-
 window.onload = ()=>{
-    const contentHeight = window.innerHeight - nav.offsetHeight
-    main.style.height = contentHeight + 'px';
-    fragmentWindows.firstChild.style.height = `${contentHeight}px`;
+    const contentHeightpx = `${window.innerHeight - nav.offsetHeight}px`
+    main.style.height = contentHeightpx;
+    fragmentWindows.firstElementChild.style.height = contentHeightpx;
 }
