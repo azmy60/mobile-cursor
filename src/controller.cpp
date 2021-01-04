@@ -111,6 +111,10 @@ void controller::handle_event(std::string &event)
         aluspointer::tap_key(aluspointer::XK_Down);
     break;
     
+    case FOCUS_WINDOW:
+        aluspointer::focus_window(event[1]);
+    break;
+    
     default:
         if(type >= TAP_ASCII && type < TAP_ASCII + 127)
         {

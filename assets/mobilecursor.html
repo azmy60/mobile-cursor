@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Mobile Cursor</title>
+<link rel="stylesheet" href="/stylesheets/mobilecursor.css"/>
+<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="msapplication-tap-highlight" content="no" />
+</head>
+<body>
+  <p style="display: none;"></p>
+  <screen id="screen-main">
+    <main>
+      <fragment id="fragment-touchpad">
+        <div id="touchpad" style="touch-action: none;" class="unselectable">
+        </div>
+        <form id="form-keyboard" style="display: none;">
+          <input id="input-text"></input>
+        </form>
+        <div id="cancel-keyboard-area" style="display: none;" class="unselectable">
+          <p>Ketuk dimana saja untuk keluar.</p>
+        </div>
+        <div class="wrapper">
+          <div id="btn-keyboard" style="z-index: 1;">
+            <span>Start typing</span>
+            <svg class="icon">
+              <use xlink:href="/icons/remixicon.symbol.svg#keyboard-box-line"></use>
+            </svg>
+          </div>
+        </div>
+      </fragment>
+      <fragment id="fragment-windows" style="display:none;">
+        <div id="wrapper-thumbnail-list">
+          <div class="wrapper-header-thumbnail-list">
+            <h2>Windows</h2>
+            <h3 style="font-weight: normal;">Sentuh untuk mengaktifkan jendela</h3>
+          </div>
+          <!-- <div class="thumbnail-window">
+            <div class="thumbnail-image-wrapper">
+              <img src="[PNGBASE64]" alt="" srcset="">
+            </div>
+            <span class="title">[TITLE]</span>
+          </div> -->
+        </div>
+      </fragment>
+      <fragment id="fragment-presentation-remote" style="display:none;">
+        <div id="btn-pointer" class="btn unselectable"></div><!-- TODO -->
+        <div id="btn-next" class="btn unselectable">
+            <svg class="icon">
+              <use xlink:href="/icons/remixicon.symbol.svg#arrow-right-s-line"></use>
+            </svg>
+        </div>
+        <div id="btn-back" class="btn unselectable">
+            <svg class="icon">
+              <use xlink:href="/icons/remixicon.symbol.svg#arrow-left-s-line"></use>
+            </svg>
+        </div>
+        <div id="btn-small-touchpad-button" class="unselectable"></div><!-- TODO -->
+        <div id="btn-small-touchpad" class="unselectable"></div><!-- TODO -->
+      </fragment>
+    </main>
+    <nav>
+      <div id="btn-touchpad" class="btn focused unselectable">
+        <svg class="icon unselectable">
+          <use xlink:href="/icons/remixicon.symbol.svg#cursor-line"></use>
+        </svg>
+        <svg class="icon unselectable">
+          <use xlink:href="/icons/remixicon.symbol.svg#cursor-fill"></use>
+        </svg>
+        <span>Touchpad</span> 
+      </div>
+      <div id="btn-windows" class="btn unselectable">
+        <svg class="icon unselectable">
+          <use xlink:href="/icons/remixicon.symbol.svg#window-2-line"></use>
+        </svg>
+        <svg class="icon unselectable">
+          <use xlink:href="/icons/remixicon.symbol.svg#window-2-fill"></use>
+        </svg>
+        <span>Windows</span> 
+      </div>
+      <div id="btn-presentation-remote" class="btn unselectable">
+        <svg class="icon unselectable">
+          <use xlink:href="/icons/remixicon.symbol.svg#slideshow-3-line"></use>
+        </svg>
+        <svg class="icon unselectable">
+          <use xlink:href="/icons/remixicon.symbol.svg#slideshow-3-fill"></use>
+        </svg>
+        <span>Presentation</span>
+      </div>
+    </nav>
+  </screen>
+  <modal id="reconnect-wrapper" class="unselectable" style="display: none;">
+  	<p>Sambungan Terputus. Ketuk untuk menyambung ulang.</p>
+  </modal>
+  <script src="/scripts/touchpad.js"></script>
+  <script src="/scripts/keyboard.js"></script>
+  <script src="/scripts/mobilecursor.js"></script>
+</body>
+</html>

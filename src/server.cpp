@@ -29,10 +29,11 @@ Server::Server()
         //if(ticket.get() == nullptr || !ticket->match_and_accepted(request))
         //    return redirect(response, "/");
 //            WsServer::Connection
-        auto path = boost::filesystem::canonical("assets/static/mobilecursor.html");
+        auto path = boost::filesystem::canonical("assets/mobilecursor.html");
         send_file(response, path.string());
     };
     
+    // TODO
     http_server.resource["^/disconnect$"]["GET"] = [this](
     std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request)
     {
@@ -52,7 +53,7 @@ Server::Server()
     
     // "Ticket"-based authentication system
     // https://devcenter.heroku.com/articles/websocket-security#authentication-authorization
-    // ..
+    // .. // TODO
     http_server.resource["^/ticket$"]["GET"] = [this](
     std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request)
     {
@@ -227,8 +228,6 @@ void Server::run(std::shared_ptr<std::thread> &http_thread, std::shared_ptr<std:
             std::cout << "server running..\n";
         });
         
-        std::cout << "woah server..\n";
-        
     });
     
     ws_thread = std::make_shared<std::thread>([this]
@@ -237,8 +236,6 @@ void Server::run(std::shared_ptr<std::thread> &http_thread, std::shared_ptr<std:
         ws_server.start([this](const ushort &port){
             std::cout << "ws running..\n";
         });
-        
-        std::cout << "woah ws..\n";
     });
 }
 

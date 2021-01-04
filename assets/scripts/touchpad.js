@@ -30,7 +30,7 @@ let Touchpad = function(touchpadId){
     const intervalTouchLeaveForSingleTap = 200
     
     // how long it takes to not touch after leaving for triggering a tap/click 
-    const intervalTouchLeaveForClick = 120
+    const intervalTouchLeaveForClick = 100
     
     // The time gap of the first finger that touches followed by the next one for triggering a touch 
     const intervalMultiFingersForTouch = 150

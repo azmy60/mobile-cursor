@@ -99,11 +99,13 @@ let VirtualKeyboardMapper = function(formId, inputId){
     // Open keyboard
     this.open = function(){
         this.clean()
+        form.style.display = 'block'
         input.focus()
     }
     
     // Close keyboard
     this.close = function(){
+        form.style.display = 'none'
         document.body.focus()
     }
     

@@ -1,0 +1,324 @@
+* {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  text-align: center;
+  color: #ffffff99;
+  background-color: #202020;
+}
+
+.unselectable {
+  -ms-user-select: none;
+      user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+}
+
+screen {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-color: #202020;
+}
+
+screen main {
+  width: 100%;
+  height: 92vh;
+}
+
+screen main fragment {
+  width: 100%;
+  height: 100%;
+}
+
+screen main #fragment-touchpad {
+  display: -ms-grid;
+  display: grid;
+  position: relative;
+}
+
+screen main #fragment-touchpad #touchpad {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+screen main #fragment-touchpad #form-keyboard {
+  display: -ms-grid;
+  display: grid;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  justify-items: center;
+}
+
+screen main #fragment-touchpad #form-keyboard, screen main #fragment-touchpad #cancel-keyboard-area {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+screen main #fragment-touchpad #cancel-keyboard-area {
+  padding-top: 3em;
+}
+
+screen main #fragment-touchpad #form-keyboard input {
+  border: none;
+  border-bottom: 1px solid #00c6e9f5;
+  background: none;
+  height: 2.1rem;
+  padding: 1rem 0.6rem;
+  text-align: center;
+  width: 100%;
+  color: white;
+  font-size: 1.3rem;
+  left: 0;
+  bottom: 5em;
+  position: fixed;
+}
+
+screen main #fragment-touchpad #form-keyboard input:focus {
+  outline: none;
+}
+
+screen main #fragment-touchpad .wrapper {
+  display: -ms-grid;
+  display: grid;
+  width: 100%;
+  height: 100%;
+}
+
+screen main #fragment-touchpad #btn-keyboard {
+  height: 2.88em;
+  padding: 0.5em 1.2em;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  border: 1px solid #ffffff60;
+  justify-self: stretch;
+  -ms-flex-item-align: end;
+      align-self: end;
+  border-radius: 3em;
+  margin-right: 1.7em;
+  margin-left: 1.7em;
+  margin-bottom: 1.8em;
+}
+
+screen main #fragment-touchpad #btn-keyboard > .icon {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  width: 0em;
+  height: 100%;
+  fill: #ffffffbe;
+}
+
+screen main #fragment-touchpad #btn-keyboard > span {
+  font-size: 0.9rem;
+  -webkit-box-flex: 5;
+      -ms-flex-positive: 5;
+          flex-grow: 5;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  color: #ffffffbe;
+}
+
+screen main #fragment-windows #wrapper-thumbnail-list {
+  height: 100%;
+  width: 100%;
+  padding: 1em 1em 3em;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  overflow: auto;
+  text-align: left;
+}
+
+screen main #fragment-windows #wrapper-thumbnail-list .thumbnail-window {
+  margin-top: 2.5em;
+  width: 100%;
+  display: -ms-grid;
+  display: grid;
+  gap: 0.5em;
+}
+
+screen main #fragment-windows #wrapper-thumbnail-list .thumbnail-window .thumbnail-image-wrapper {
+  width: 100%;
+  background-color: black;
+  text-align: center;
+}
+
+screen main #fragment-windows #wrapper-thumbnail-list .thumbnail-window .title {
+  font-weight: bold;
+}
+
+screen main #fragment-presentation-remote {
+  position: relative;
+}
+
+screen main #fragment-presentation-remote .btn {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+screen main #fragment-presentation-remote .btn .icon {
+  fill: #ffffffe6;
+}
+
+screen main #fragment-presentation-remote #btn-next {
+  position: absolute;
+  width: 12em;
+  height: 12em;
+  left: 50%;
+  top: 40%;
+  margin-left: -6em;
+  margin-top: -6em;
+  border: 2px solid #ffffff6c;
+  border-radius: 50%;
+  -webkit-box-shadow: 5px 5px 14px #111111, -5px -5px 14px #353535;
+          box-shadow: 5px 5px 14px #111111, -5px -5px 14px #353535;
+}
+
+screen main #fragment-presentation-remote #btn-next .icon {
+  width: 45%;
+  margin-left: 0.5em;
+}
+
+screen main #fragment-presentation-remote #btn-back {
+  position: absolute;
+  width: 6em;
+  height: 6em;
+  left: 50%;
+  top: 68%;
+  margin-left: -3em;
+  margin-top: -3em;
+  border-radius: 50px;
+  -webkit-box-shadow: 5px 5px 10px #111111, -5px -5px 10px #353535;
+          box-shadow: 5px 5px 10px #111111, -5px -5px 10px #353535;
+}
+
+screen main #fragment-presentation-remote #btn-back .icon {
+  width: 60%;
+  margin-left: -0.2em;
+}
+
+screen nav {
+  width: 100%;
+  overflow: hidden;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  bottom: 0;
+  position: fixed;
+  border-top: 1px solid #2b2b2b;
+  background-color: inherit;
+  padding: 0.2em 0;
+  z-index: 2;
+}
+
+screen nav > * {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  padding: 0.65em 0em 0.4em;
+}
+
+screen nav .btn {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-rows: 1.6em auto;
+      grid-template-rows: 1.6em auto;
+}
+
+screen nav .btn > :nth-of-type(2) {
+  display: none;
+}
+
+screen nav .btn.focused > :nth-of-type(2) {
+  display: block;
+  fill: #64dbff;
+}
+
+screen nav .btn.focused > :first-of-type {
+  display: none;
+}
+
+screen nav .btn.focused > span {
+  display: inline !important;
+  font-weight: bold;
+  color: #64dbff;
+}
+
+screen nav .icon {
+  width: 100%;
+  height: 1.3em;
+  fill: #ffffffd9;
+}
+
+screen nav .icon.inactive {
+  display: none;
+}
+
+screen nav span {
+  font-size: 0.7rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+screen nav span.inactive {
+  font-weight: bold;
+}
+
+modal {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.9);
+  padding: 1em;
+  left: 0;
+  top: 0;
+  display: none;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+/*# sourceMappingURL=mobilecursor.css.map */
