@@ -108,6 +108,277 @@ namespace mobilecursor
         return dist(rng);
     }
 
+    /* 
+       base64.cpp and base64.h
+
+       Copyright (C) 2004-2008 René Nyffenegger
+
+       This source code is provided 'as-is', without any express or implied
+       warranty. In no event will the author be held liable for any damages
+       arising from the use of this software.
+
+       Permission is granted to anyone to use this software for any purpose,
+       including commercial applications, and to alter it and redistribute it
+       freely, subject to the following restrictions:
+
+       1. The origin of this source code must not be misrepresented; you must not
+          claim that you wrote the original source code. If you use this source code
+          in a product, an acknowledgment in the product documentation would be
+          appreciated but is not required.
+
+       2. Altered source versions must be plainly marked as such, and must not be
+          misrepresented as being the original source code.
+
+       3. This notice may not be removed or altered from any source distribution.
+
+       René Nyffenegger rene.nyffenegger@adp-gmbh.ch
+
+    */
+
+    static const std::string base64_chars = 
+                 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                 "abcdefghijklmnopqrstuvwxyz"
+                 "0123456789+/";
+
+
+    static inline bool is_base64(unsigned char c) {
+      return (isalnum(c) || (c == '+') || (c == '/'));
+    }
+
+    std::string base64_encode(unsigned char const* bytes_to_encode, unsigned int in_len) {
+      std::string ret;
+      int i = 0;
+      int j = 0;
+      unsigned char char_array_3[3];
+      unsigned char char_array_4[4];
+
+      while (in_len--) {
+        char_array_3[i++] = *(bytes_to_encode++);
+        if (i == 3) {
+          char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+          char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+          char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+          char_array_4[3] = char_array_3[2] & 0x3f;
+
+          for(i = 0; (i <4) ; i++)
+            ret += base64_chars[char_array_4[i]];
+          i = 0;
+        }
+      }
+
+      if (i)
+      {
+        for(j = i; j < 3; j++)
+          char_array_3[j] = '\0';
+
+        char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+        char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+        char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+        char_array_4[3] = char_array_3[2] & 0x3f;
+
+        for (j = 0; (j < i + 1); j++)
+          ret += base64_chars[char_array_4[j]];
+
+        while((i++ < 3))
+          ret += '=';
+
+      }
+
+      return ret;
+
+    }
+    
+    std::string base64_decode(std::string const& encoded_string) {
+      int in_len = encoded_string.size();
+      int i = 0;
+      int j = 0;
+      int in_ = 0;
+      unsigned char char_array_4[4], char_array_3[3];
+      std::string ret;
+
+      while (in_len-- && ( encoded_string[in_] != '=') && is_base64(encoded_string[in_])) {
+        char_array_4[i++] = encoded_string[in_]; in_++;
+        if (i ==4) {
+          for (i = 0; i <4; i++)
+            char_array_4[i] = base64_chars.find(char_array_4[i]);
+
+          char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+          char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+          char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+          for (i = 0; (i < 3); i++)
+            ret += char_array_3[i];
+          i = 0;
+        }
+      }
+
+      if (i) {
+        for (j = i; j <4; j++)
+          char_array_4[j] = 0;
+
+        for (j = 0; j <4; j++)
+          char_array_4[j] = base64_chars.find(char_array_4[j]);
+
+        char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+        char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+        char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+        for (j = 0; (j < i - 1); j++) ret += char_array_3[j];
+      }
+
+      return ret;
+    }
+    
+    
+    // See https://github.com/nlohmann/json/blob/ec7a1d834773f9fee90d8ae908a0c9933c5646fc/src/json.hpp#L4604-L4697
+    
+     /*!
+    @brief calculates the extra space to escape a JSON string
+    @param[in] s  the string to escape
+    @return the number of characters required to escape string @a s
+    @complexity Linear in the length of string @a s.
+    */
+    static std::size_t extra_space(const std::string& s) noexcept
+    {
+        std::size_t result = 0;
+
+        for (const auto& c : s)
+        {
+            switch (c)
+            {
+                case '"':
+                case '\\':
+                case '\b':
+                case '\f':
+                case '\n':
+                case '\r':
+                case '\t':
+                {
+                    // from c (1 byte) to \x (2 bytes)
+                    result += 1;
+                    break;
+                }
+
+                default:
+                {
+                    if (c >= 0x00 and c <= 0x1f)
+                    {
+                        // from c (1 byte) to \uxxxx (6 bytes)
+                        result += 5;
+                    }
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /*!
+    @brief escape a string
+    Escape a string by replacing certain special characters by a sequence of an
+    escape character (backslash) and another character and other control
+    characters by a sequence of "\u" followed by a four-digit hex
+    representation.
+    @param[in] s  the string to escape
+    @return  the escaped string
+    @complexity Linear in the length of string @a s.
+    */
+    std::string escape_string(const std::string& s) noexcept
+    {
+        const auto space = extra_space(s);
+        if (space == 0)
+        {
+            return s;
+        }
+
+        // create a result string of necessary size
+        std::string result(s.size() + space, '\\');
+        std::size_t pos = 0;
+
+        for (const auto& c : s)
+        {
+            switch (c)
+            {
+                // quotation mark (0x22)
+                case '"':
+                {
+                    result[pos + 1] = '"';
+                    pos += 2;
+                    break;
+                }
+
+                // reverse solidus (0x5c)
+                case '\\':
+                {
+                    // nothing to change
+                    pos += 2;
+                    break;
+                }
+
+                // backspace (0x08)
+                case '\b':
+                {
+                    result[pos + 1] = 'b';
+                    pos += 2;
+                    break;
+                }
+
+                // formfeed (0x0c)
+                case '\f':
+                {
+                    result[pos + 1] = 'f';
+                    pos += 2;
+                    break;
+                }
+
+                // newline (0x0a)
+                case '\n':
+                {
+                    result[pos + 1] = 'n';
+                    pos += 2;
+                    break;
+                }
+
+                // carriage return (0x0d)
+                case '\r':
+                {
+                    result[pos + 1] = 'r';
+                    pos += 2;
+                    break;
+                }
+
+                // horizontal tab (0x09)
+                case '\t':
+                {
+                    result[pos + 1] = 't';
+                    pos += 2;
+                    break;
+                }
+
+                default:
+                {
+                    if (c >= 0x00 and c <= 0x1f)
+                    {
+                        // print character c as \uxxxx
+                        sprintf(&result[pos + 1], "u%04x", int(c));
+                        pos += 6;
+                        // overwrite trailing null character
+                        result[pos] = '\\';
+                    }
+                    else
+                    {
+                        // all other characters are added as-is
+                        result[pos++] = c;
+                    }
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
     // https://stackoverflow.com/a/13445752
 //    class RandomGenerator
 //    {

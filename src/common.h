@@ -28,6 +28,11 @@ namespace mobilecursor
         std::string get_device_name() const;
     };
     
+    std::string base64_encode(unsigned char const* bytes_to_encode, unsigned int in_len);
+    std::string base64_decode(std::string const& encoded_string);
+    
+    std::string escape_string(const std::string& s) noexcept;
+    
     /*
     // Formater usage:
     // throw std::runtime_error(Formatter() << foo << ", bar"); (implicitly cast to std::string)
