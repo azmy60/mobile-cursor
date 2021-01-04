@@ -76,6 +76,11 @@ touchpad.onscroll = (direction)=>{
     send(9 + direction)
 }
 
+function toggleWindow(id){
+    console.log(id)
+    send(146, id)
+}
+
 function openKeyboard(){
     btnKeyboard.style.visibility = 'hidden'
     cancelKeyboardArea.style.display = 'block'
@@ -163,14 +168,14 @@ function int12(n){
  * (Mouse move 12-bit)  :   | Type | xxxxxxxx | xxxxyyyy | yyyyyyyy |
  * (Mouse move 16-bit)  :   | Type | xxxxxxxx | xxxxxxxx | yyyyyyyy | yyyyyyyy |
  * (String)             :   | Type |   Data   |
- * (Focus window)       :   | Type |    ID    |
+ * (Toggle window)      :   | Type |    ID    |
  * 
  * The types are:   000 Left Click     007 Middle Down              141 String
  *                  001 Right Click    008 Middle Up                142 Left Arrow
  *                  002 Middle Click   009 Scroll Down              143 Up Arrow
  *                  003 Left Down      010 Scroll Up                144 Right Arrow
  *                  004 Left Up        011-138 Tap ASCII Code       145 Down Arrow
- *                  005 Right Down     139 Mouse Move (8-bit)       146 Focus Window
+ *                  005 Right Down     139 Mouse Move (8-bit)       146 Toggle Window
  *                  006 Right Up       140 Mouse Move (16-bit)
  *
  * 
@@ -188,7 +193,7 @@ function send(type, data1, data2){
         buffer = new Uint8Array([type, data1])
     else
         buffer = new Uint8Array([type]);
-    
+
     ws.send(buffer);
 }
 
