@@ -2,6 +2,7 @@
 #define CONTROLLER_H
 
 #include <string>
+#include "aluspointer.h"
 
 namespace mobilecursor
 {
@@ -17,6 +18,9 @@ namespace mobilecursor
             DOWN_ARROW, FOCUS_WINDOW
         };
         void handle_event(std::string &event);
+        const std::string update_window_list();
+        const std::string get_window_image(uint8_t id);
+        void toggle_window(uint8_t id);
     };
 
 }

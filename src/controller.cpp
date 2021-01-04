@@ -1,5 +1,5 @@
 #include "controller.h"
-#include "aluspointer.h"
+#include "common.h"
 #include <iostream>
 
 using namespace mobilecursor;
@@ -112,7 +112,7 @@ void controller::handle_event(std::string &event)
     break;
     
     case FOCUS_WINDOW:
-        aluspointer::focus_window(event[1]);
+        aluspointer::focus_window((uint8_t)event[1]);
     break;
     
     default:
@@ -128,4 +128,37 @@ void controller::handle_event(std::string &event)
         }
     break;
     }
+}
+
+const std::string controller::update_window_list()
+{
+    auto window_list = aluspointer::update_window_list();
+    std::string json("[");
+    
+    if(!window_list.empty())
+    {
+        json += "{\"id\":0,\"name\":\"" + escape_string(window_list[0].name) + "\"}";
+        
+        std::for_each(window_list.begin() + 1, window_list.end(), 
+        [&json](aluspointer::window_client_t win_client)
+        {
+            json += ",{\"id\":" + std::to_string(win_client.id) + ",\"name\":\"" + escape_string(win_client.name) + "\"}";
+        });        
+    }
+    
+    json += "]";
+    
+    return json;
+}
+
+const std::string controller::get_window_image(uint8_t id)
+{
+    auto raw = aluspointer::get_window_image(id);
+    return "data:image/png;base64," + base64_encode(raw.data(), raw.size());
+}
+
+void controller::toggle_window(uint8_t id)
+{
+    // TODO
+    aluspointer::focus_window(id);
 }

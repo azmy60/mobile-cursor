@@ -51,6 +51,44 @@ Server::Server()
         redirect(response, "/");
     };
     
+    // Update window list
+    http_server.resource["^/upd$"]["GET"] = [this](
+    std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request)
+    {
+        auto user_agent = std::make_unique<UserAgentParser>(request->header);
+        if(user_agent->is_mobile() == false)
+            return response->write(SimpleWeb::StatusCode::client_error_forbidden, "Please use your phone to access.");
+
+        auto window_list_json = controller::update_window_list();
+
+        SimpleWeb::CaseInsensitiveMultimap header;
+
+        header.emplace("Content-Type", "application/json");
+        header.emplace("Content-Length", std::to_string(window_list_json.length()));
+        
+        response->write(window_list_json, header);
+    };
+    
+    // Get image of a window
+    http_server.resource["^/winimg/([0-9]+)$"]["GET"] = [this](
+    std::shared_ptr<HttpServer::Response> response, std::shared_ptr<HttpServer::Request> request)
+    {
+        auto user_agent = std::make_unique<UserAgentParser>(request->header);
+        if(user_agent->is_mobile() == false)
+            return response->write(SimpleWeb::StatusCode::client_error_forbidden, "Please use your phone to access.");
+
+        auto id = std::stoi(request->path_match[1].str()); // TODO unsafe
+        
+        auto buffer = controller::get_window_image(id);
+        
+        SimpleWeb::CaseInsensitiveMultimap header;
+        
+        header.emplace("Content-Type", "application/json");
+        header.emplace("Content-Length", std::to_string(buffer.length()));
+        
+        response->write(buffer, header);
+    };
+    
     // "Ticket"-based authentication system
     // https://devcenter.heroku.com/articles/websocket-security#authentication-authorization
     // .. // TODO
