@@ -44,6 +44,10 @@ let VirtualKeyboardMapper = function(formId, inputId){
             cleanInKeyUp = true
         }
     } 
+
+    input.addEventListener('touchstart', ev=>{
+        ev.stopPropagation
+    })
     
     input.addEventListener('keydown', function(ev){
         isBackspace = (ev.keyCode == 8)
@@ -55,14 +59,22 @@ let VirtualKeyboardMapper = function(formId, inputId){
         if(isBackspace) 
             onsubmit_(VirtualKeyboardMapper.BACKSPACE, true)
         else if(isEnter){
-            if(oldText){
-                if(ins.spaceWhenEnter)
-                    onsubmit_(oldText + ' ', false, true)
+            if(ins.submitInstantly){
+                if(input.value.length == 0)
+                    onsubmit_(VirtualKeyboardMapper.RETURN, true, true)
                 else
-                    onsubmit_(oldText, false, true)
+                    ins.clean()
             }
-            else
-                onsubmit_(VirtualKeyboardMapper.RETURN, true, true)
+            else{
+                if(oldText){
+                    if(ins.spaceWhenEnter)
+                        onsubmit_(oldText + ' ', false, true)
+                    else
+                        onsubmit_(oldText, false, true)
+                }
+                else
+                    onsubmit_(VirtualKeyboardMapper.RETURN, true, true)
+            }
         }
         else if(isSpace){
             if(oldText == '' && !ins.submitWhenPressSpace)
@@ -72,6 +84,8 @@ let VirtualKeyboardMapper = function(formId, inputId){
             else
                 onsubmit_(VirtualKeyboardMapper.SPACE, true, true)
         }
+
+        ins.onkeydown()
     }) 
     
     input.addEventListener('keyup', function(ev){
@@ -88,17 +102,25 @@ let VirtualKeyboardMapper = function(formId, inputId){
 
         if(length > 0){ // passes if user adds character
             newText = this.value.substr(oldText.length, length)
-
-            if(newText == ' ' && ins.submitWhenPressSpace) // new text is <space>?
+            if(ins.submitInstantly)
+            {
+                onsubmit_(newText, false, false)
+            }
+            else if(newText == ' ' && ins.submitWhenPressSpace) // new text is <space>?
                 onsubmit_(this.value, false, true)
+        }
+        else if(ins.submitInstantly){ // passes if user removes character
+            onsubmit_(VirtualKeyboardMapper.BACKSPACE, true)
         }
 
         oldText = this.value
+
+        ins.onkeyup()
     })
     
     // Open keyboard
     this.open = function(){
-        this.clean()
+        // this.clean()
         form.style.display = 'block'
         input.focus()
     }
@@ -112,14 +134,20 @@ let VirtualKeyboardMapper = function(formId, inputId){
     // Event that is called when the user submits the texts
     this.onsubmit = null
 
+    this.onkeyup = null
+
+    this.onkeydown = null
+
     // Submits the text when user presses space and the text is not empty
     this.submitWhenPressSpace = true
+
+    this.submitInstantly = false
 
     // If the text is exists, space (" ") is added after the text before submits.
     this.spaceWhenEnter = false
 }
 
-Object.defineProperties(VirtualKeyboardMapper,{
+Object.defineProperties(VirtualKeyboardMapper, {
     BACKSPACE: {value: 0},
     RETURN: {value: 1},
     SPACE: {value: 2},

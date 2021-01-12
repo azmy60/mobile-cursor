@@ -14,14 +14,23 @@
         <div id="touchpad" style="touch-action: none;" class="unselectable">
         </div>
         <form id="form-keyboard" style="display: none;">
-          <input id="input-text"></input>
+          <!-- <div id="cancel-keyboard-area" style="display: none;" class="unselectable">
+            <p>Ketuk dimana saja untuk keluar.</p>
+          </div> -->
+          <div id="wrapper-input">
+            <div id="btn-instant-mode">Mode Instan</div>
+            <input id="input-text" autocomplete=off></input>
+            <svg class="icon" id="btn-input-close">
+              <use xlink:href="/icons/remixicon.symbol.svg#arrow-left-line"></use>
+            </svg>
+            <svg class="icon" id="btn-input-clear">
+              <use xlink:href="/icons/remixicon.symbol.svg#close-circle-fill"></use>
+            </svg>
+          </div>
         </form>
-        <div id="cancel-keyboard-area" style="display: none;" class="unselectable">
-          <p>Ketuk dimana saja untuk keluar.</p>
-        </div>
         <div class="wrapper">
           <div id="btn-keyboard" style="z-index: 1;">
-            <span>Start typing</span>
+            <span>Ketik disini</span>
             <svg class="icon">
               <use xlink:href="/icons/remixicon.symbol.svg#keyboard-box-line"></use>
             </svg>
@@ -30,17 +39,17 @@
       </fragment>
       <fragment id="fragment-windows" style="display:none;">
         <div id="wrapper-thumbnail-list">
-          <div class="wrapper-header-thumbnail-list">
-            <h2>Windows</h2>
-            <h3 style="font-weight: normal;">Sentuh untuk mengaktifkan jendela</h3>
+          <div id="wrapper-header-thumbnail-list">
+            <h2>Window Manager</h2>
+            <h3 style="font-weight: normal;">Sentuh untuk membuka/menutup jendela</h3>
           </div>
           <div id="pool-thumbnail">
-            <!-- <div class="thumbnail-window">
-              <div class="thumbnail-image-wrapper">
+            <!-- <thumbnail>
+              <thumbnail-wrapper-image>
                 <img src="[PNGBASE64]" alt="" srcset="">
-              </div>
-              <span class="title">[TITLE]</span>
-            </div> -->
+              </thumbnail-wrapper-image>
+              <div class="title">[TITLE]</div>
+            </thumbnail> -->
           </div>
         </div>
       </fragment>
@@ -90,7 +99,7 @@
       </div>
     </nav>
   </screen>
-  <modal id="reconnect-wrapper" class="unselectable" style="display: none;">
+  <modal id="reconnect-wrapper" class="unselectable">
   	<p>Sambungan Terputus. Ketuk untuk menyambung ulang.</p>
   </modal>
   <script src="/scripts/touchpad.js"></script>

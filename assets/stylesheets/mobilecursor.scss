@@ -8,7 +8,7 @@ body {
     height: 100%;
     font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
     text-align: center;
-    color: #ffffff99;
+    color: #ffffffe0;
     background-color: #202020;
 }
 .unselectable {
@@ -34,6 +34,7 @@ screen {
         fragment {
             width: 100%;
             height: 100%;
+            display: block;
         }
         #fragment-touchpad {
             display: grid;
@@ -51,32 +52,70 @@ screen {
                 display: grid;
                 align-items: center;
                 justify-items: center;
-            }
-            #form-keyboard, #cancel-keyboard-area {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-            }
-            #cancel-keyboard-area {
-                padding-top: 3em;
-            }
-            #form-keyboard input {
-                border: none;
-                border-bottom: 1px solid #00c6e9f5;
-                // background: #ffffff15;
-                background: none;
-                height: 2.1rem;
-                padding: 1rem 0.6rem;
-                text-align: center;
-                width: 100%;
-                color: white;
-                font-size: 1.3rem;
-                left: 0;
-                bottom: 5em;
-                position: fixed;
 
-                &:focus {
-                    outline: none;
+                // #cancel-keyboard-area {
+                //     position: absolute;
+                //     width: 100%;
+                //     height: 100%;
+                // }
+                #wrapper-input {
+                    position: fixed;
+                    left: 0;
+                    top: 0;
+                    bottom: 13%;
+                    width: 100%;
+
+                    #btn-instant-mode {
+                        border-radius: 2em;
+                        border: 1px solid #ffffff60;
+                        margin-left: auto;
+                        margin-right: auto;
+                        margin-top: 1em;
+                        line-height: 2em;
+                        width: 8em;
+                        height: 2em;
+                        top: 0;
+    
+                        &.active {
+                            color: #20c9fc;
+                            border-color: #20c9fc;
+                        }
+                    }
+                    #input-text {
+                        position: absolute;
+                        left: 0;
+                        bottom: 0;
+                        border: none;
+                        border-bottom: 1px solid #ffffff75;
+                        // background: #ffffff15;
+                        background: none;
+                        width: 100%;
+                        height: 2.1rem;
+                        padding: 1em 2.9rem 1em;
+                        text-align: center;
+                        color: white;
+                        font-size: 1.1rem;
+    
+                        &:focus {
+                            outline: none;
+                        }
+                    }
+                    .icon {
+                        position: absolute;
+                        height: 1.4rem;
+                        width: 1.4rem;
+                        bottom: .6em;
+                        z-index: 2;
+                    }
+                    #btn-input-close {
+                        left: 1em;
+                        fill: #20c9fc;
+                    }
+                    #btn-input-clear {
+                        right: 1em;
+                        fill: #ffffff52;
+                        visibility: hidden;
+                    }
                 }
             }
             .wrapper {
@@ -86,17 +125,17 @@ screen {
                 // background-color: magenta;
             }
             #btn-keyboard {
-                height: 2.88em;
-                padding: 0.5em 1.2em;
+                height: 2.8em;
+                padding: .5em 1.1em;
                 display: flex;
                 // background-color: #ffffff15;
                 border: 1px solid #ffffff60;
                 justify-self: stretch;
                 align-self: end;
-                border-radius: 3em;
+                border-radius: 2em;
                 margin-right: 1.7em;
                 margin-left: 1.7em;
-                margin-bottom: 1.8em;
+                margin-bottom: 2.5em;
                 // margin-right: 1.4em;
             }
             #btn-keyboard > .icon {
@@ -106,8 +145,8 @@ screen {
                 fill: #ffffffbe;
             }
             #btn-keyboard > span {
-                // padding-left: 0.9em;
-                font-size: 0.9rem;
+                // padding-left: .9em;
+                font-size: .9rem;
                 flex-grow: 5;
                 display: flex;
                 align-items: center;
@@ -120,18 +159,20 @@ screen {
             #wrapper-thumbnail-list {
                 height: 100%;
                 width: 100%;
-                padding: 1em 1em 3em;
+                padding: 1em 0 3em;
                 display: flex;
                 flex-direction: column;
                 overflow-y: auto;
                 overflow-x: hidden;
                 text-align: left;
 
+                #wrapper-header-thumbnail-list {
+                    padding: 0 .6em;
+                }
                 thumbnail {
                     margin-top: 2.5em;
                     width: 100%;
                     display: grid;
-                    gap: 0.5em;
 
                     thumbnail-wrapper-image {
                         width: 100%;
@@ -143,6 +184,8 @@ screen {
                         }
                     }
                     .title {
+                        padding: 0 .6em;
+                        margin-top: 0.8em;
                         font-weight: bold;
                         color: whitesmoke;
                     }
@@ -169,7 +212,7 @@ screen {
                 top: 40%;
                 margin-left:-6em;
                 margin-top:-6em;
-                border: 2px solid #ffffff6c;
+                border: 3px solid #ffffffb4;
                 border-radius: 50%;
                 // background: linear-gradient(145deg, #202020, #252525);
                 box-shadow:  5px 5px 14px #111111,
@@ -177,7 +220,7 @@ screen {
                 
                 .icon {
                     width: 45%;
-                    margin-left: 0.5em;
+                    margin-left: .5em;
                 }
             }
             #btn-back {
@@ -188,6 +231,7 @@ screen {
                 top: 68%;
                 margin-left:-3em;
                 margin-top:-3em;
+                border: 2px solid #ffffff6c;
                 border-radius: 50px;
                 // background: linear-gradient(145deg, #202020, #252525);
                 box-shadow:  5px 5px 10px #111111,
@@ -195,7 +239,7 @@ screen {
                 
                 .icon {
                     width: 60%;
-                    margin-left: -0.2em;
+                    margin-left: -.2em;
                 }
             }
         }
@@ -207,39 +251,49 @@ screen {
         display: flex;
         bottom: 0;
         position: fixed;
-        border-top: 1px solid #2b2b2b;
+        border-top: 1px solid #ffffffa9;
         background-color: inherit;
-        padding: 0.2em 0;
-        z-index: 2;
+        padding: .1em 0;
+        z-index: 1;
 
         & > * {
             flex-grow: 1;
-            padding: 0.65em 0em 0.4em;
+            padding: .65em 0em .4em;
         }
         .btn {
             $focused: rgb(100, 219, 255);
+            $unfocused: #ffffffa9;
             display: grid;
             grid-template-rows: 1.6em auto;
-            
-            &>:nth-of-type(2) {
+            color: $unfocused;
+
+            & > svg {
+                fill: $unfocused;
+                stroke-width: 1;
+            }
+            & > span {
+                padding-bottom: .3em;
+                letter-spacing: .036em;
+            }
+            & > :nth-of-type(2) {
                 display: none;
             }
-            &.focused>:nth-of-type(2) {
+            &.focused > :nth-of-type(2) {
                 display: block;
                 fill: $focused;
             }
-            &.focused>:first-of-type {
+            &.focused > :first-of-type {
                 display: none;
             }
-            &.focused>span {
+            &.focused > span {
                 display: inline !important;
-                font-weight: bold;
+                // font-weight: bold;
                 color: $focused;
             }
         }
         .icon {
             width: 100%;
-            height: 1.3em;
+            height: 1.35em;
             fill: #ffffffd9;
             
             &.inactive {
@@ -247,7 +301,7 @@ screen {
             }
         }
         span {
-            font-size: 0.7rem;
+            font-size: .7rem;
             // background-color: darkmagenta;
             display: flex;
             align-items: center;
@@ -260,15 +314,16 @@ screen {
         }
     }
 }
-modal {
+#reconnect-wrapper {
     width: 100%;
     height: 100%;
     position: absolute;
-    background-color: rgba($color: #000000, $alpha: 0.9);
+    background-color: rgba($color: #000000, $alpha: .9);
     padding: 1em;
     left: 0;
     top: 0;
     display: none; // flex when active
     justify-content: center;
     align-items: center;
+    z-index: 5;
 }
