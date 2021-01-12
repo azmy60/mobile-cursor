@@ -109,7 +109,7 @@ namespace mobilecursor
             {
             }
         };
-        std::shared_ptr<Connected> connected_dev;
+        std::shared_ptr<WsServer::Connection> active_connection;
         
     public:
         static Server *getIns()
@@ -118,7 +118,9 @@ namespace mobilecursor
         }
     
         void start();
-        void run(std::shared_ptr<std::thread> &http_thread, std::shared_ptr<std::thread> &ws_thread);
+        void run(std::shared_ptr<std::thread> &http_thread, 
+            std::shared_ptr<std::thread> &ws_thread,
+            std::shared_ptr<std::thread> &alus_thread);
 
     protected:
         HttpServer http_server;

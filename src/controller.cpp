@@ -1,6 +1,5 @@
 #include "controller.h"
 #include "common.h"
-#include <iostream>
 
 using namespace mobilecursor;
 
@@ -96,23 +95,27 @@ void controller::handle_event(std::string &event)
     break;
     
     case LEFT_ARROW:
-        aluspointer::tap_key(aluspointer::XK_Left);
+        aluspointer::tap_key(aluspointer::Key_Left);
     break;
     
     case UP_ARROW:
-        aluspointer::tap_key(aluspointer::XK_Up);
+        aluspointer::tap_key(aluspointer::Key_Up);
     break;
     
     case RIGHT_ARROW:
-        aluspointer::tap_key(aluspointer::XK_Right);
+        aluspointer::tap_key(aluspointer::Key_Right);
     break;
     
     case DOWN_ARROW:
-        aluspointer::tap_key(aluspointer::XK_Down);
+        aluspointer::tap_key(aluspointer::Key_Down);
     break;
     
-    case FOCUS_WINDOW:
-        aluspointer::focus_window((uint8_t)event[1]);
+    case TOGGLE_WINDOW:
+    {
+        uint8_t id = event[1]; 
+        aluspointer::toggle_window(id);
+        aluspointer::listen_to_window(id);
+    }
     break;
     
     default:

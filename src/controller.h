@@ -15,7 +15,7 @@ namespace mobilecursor
             MIDDLEDOWN, MIDDLEUP, SCROLLDOWN, SCROLLUP,
             TAP_ASCII, MOUSEMOVE8 = 139, MOUSEMOVE16,
             STRING, LEFT_ARROW, UP_ARROW, RIGHT_ARROW,
-            DOWN_ARROW, FOCUS_WINDOW
+            DOWN_ARROW, TOGGLE_WINDOW
         };
         void handle_event(std::string &event);
         const std::string update_window_list();

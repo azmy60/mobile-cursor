@@ -8,6 +8,10 @@
 #include <random>
 #include <regex>
 #include <map>
+#include <cstring>
+#include <ifaddrs.h>
+#include <netinet/in.h> 
+#include <arpa/inet.h>
 
 namespace mobilecursor
 {
@@ -106,6 +110,32 @@ namespace mobilecursor
         std::mt19937 rng(dev());
         std::uniform_int_distribution<std::mt19937::result_type> dist(min, max); // distribution in range [min, max]
         return dist(rng);
+    }
+
+    // https://stackoverflow.com/a/265978/10012118
+    std::string get_local_ip()
+    {
+        ifaddrs *if_addrs = nullptr, *ifa = nullptr;
+        void *tmpAddrPtr = nullptr;
+        char addressBuffer[INET_ADDRSTRLEN];
+
+        getifaddrs(&if_addrs);
+
+        for (ifa = if_addrs; ifa != nullptr; ifa = ifa->ifa_next) {
+            if (!ifa->ifa_addr)
+                continue;
+            if (ifa->ifa_addr->sa_family == AF_INET) { // check it is IP4
+                // is a valid IP4 Address
+                tmpAddrPtr = &((sockaddr_in *)ifa->ifa_addr)->sin_addr;
+                inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
+                if(std::strcmp(addressBuffer, "127.0.0.1") > 0)
+                    break;
+            } 
+        }
+        
+        if (if_addrs) freeifaddrs(if_addrs);
+        
+        return addressBuffer;
     }
 
     /* 

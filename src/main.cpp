@@ -17,10 +17,13 @@ int main()
 
     std::shared_ptr<std::thread> http_thread;
     std::shared_ptr<std::thread> ws_thread;
-    server->run(http_thread, ws_thread);
-
+    std::shared_ptr<std::thread> alus_thread;
+    server->run(http_thread, ws_thread, alus_thread);
+    
+    
     http_thread->join();
     ws_thread->join();
+    alus_thread->join();
     
     return 0;
 }

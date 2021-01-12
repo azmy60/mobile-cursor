@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <boost/filesystem.hpp>
 #include <iostream>
+#include <condition_variable>
 
 using namespace mobilecursor;
 
@@ -163,50 +164,50 @@ Server::Server()
     // --- WEBSOCKET ---
     
     // /(index) endpoint
-    auto &ws_index = ws_server.endpoint["^/$"];
-    
-    // index - on handshake
-    ws_index.on_handshake = [](std::shared_ptr<WsServer::Connection> /*connection*/, 
-    SimpleWeb::CaseInsensitiveMultimap &/*response_header*/)
-    {
-        return SimpleWeb::StatusCode::information_switching_protocols; // Upgrade to websocket
-    };
-
-    // index - on open
-    ws_index.on_open = [this](std::shared_ptr<WsServer::Connection> connection)
-    {
-        std::cout << "ws_index: Opened connection " << connection.get() << '\n';
-        
-//        connection->send("reload", [](const SimpleWeb::error_code &ec)
-//        {
-//            if(ec)
-//                std::cout << "ws_index: Error sending message. " <<
-//                "Error: " << ec << ", error message: " << ec.message() << '\n';
-//        });
-    };
-    
-    // index - on error
-    ws_index.on_error = [](std::shared_ptr<WsServer::Connection> connection, const SimpleWeb::error_code &ec)
-    {
-        std::cout << "ws_index: Error in connection " << connection.get() << ". "
-            << "Error: " << ec << ", error message: " << ec.message() << '\n';
-    };
-    
-    // index - on close
-    ws_index.on_close = [](
-    std::shared_ptr<WsServer::Connection> connection, 
-    int status, const std::string &/*reason*/)
-    {
-        std::cout << "ws_index: Closed connection " << connection.get() 
-            << " with status code " << status << '\n';
-    };
-    
-    // index - on message
-    ws_index.on_message = [](
-    std::shared_ptr<WsServer::Connection> connection, 
-    std::shared_ptr<WsServer::InMessage> in_message)
-    {
-    };
+//    auto &ws_index = ws_server.endpoint["^/$"];
+//    
+//    // index - on handshake
+//    ws_index.on_handshake = [](std::shared_ptr<WsServer::Connection> /*connection*/, 
+//    SimpleWeb::CaseInsensitiveMultimap &/*response_header*/)
+//    {
+//        return SimpleWeb::StatusCode::information_switching_protocols; // Upgrade to websocket
+//    };
+//
+//    // index - on open
+//    ws_index.on_open = [this](std::shared_ptr<WsServer::Connection> connection)
+//    {
+//        std::cout << "ws_index: Opened connection " << connection.get() << '\n';
+//        
+////        connection->send("reload", [](const SimpleWeb::error_code &ec)
+////        {
+////            if(ec)
+////                std::cout << "ws_index: Error sending message. " <<
+////                "Error: " << ec << ", error message: " << ec.message() << '\n';
+////        });
+//    };
+//    
+//    // index - on error
+//    ws_index.on_error = [](std::shared_ptr<WsServer::Connection> connection, const SimpleWeb::error_code &ec)
+//    {
+//        std::cout << "ws_index: Error in connection " << connection.get() << ". "
+//            << "Error: " << ec << ", error message: " << ec.message() << '\n';
+//    };
+//    
+//    // index - on close
+//    ws_index.on_close = [](
+//    std::shared_ptr<WsServer::Connection> connection, 
+//    int status, const std::string &/*reason*/)
+//    {
+//        std::cout << "ws_index: Closed connection " << connection.get() 
+//            << " with status code " << status << '\n';
+//    };
+//    
+//    // index - on message
+//    ws_index.on_message = [](
+//    std::shared_ptr<WsServer::Connection> connection, 
+//    std::shared_ptr<WsServer::InMessage> in_message)
+//    {
+//    };
 
 
     // /mobilecursor endpoint
@@ -222,7 +223,18 @@ Server::Server()
     // mobilecursor - on open
     ws_mobilecursor.on_open = [this](std::shared_ptr<WsServer::Connection> connection)
     {
-        std::cout << "ws_mobilecursor: Opened connection " << connection.get() << '\n';
+        if(active_connection)
+        {
+            std::cout << "ws_mobilecursor: New client is connected while there" 
+                "is still an active connection. Sending close 103.. " << connection.get() << '\n';
+            connection->send_close(1013); // 1013 = Try Again Later
+        }
+        else
+        {
+            active_connection = connection;
+            std::cout << "ws_mobilecursor: Opened connection " << connection.get() << '\n';
+        }
+        
     };
     
     // mobilecursor - on error
@@ -233,12 +245,21 @@ Server::Server()
     };
     
     // mobilecursor - on close
-    ws_mobilecursor.on_close = [](
+    ws_mobilecursor.on_close = [this](
     std::shared_ptr<WsServer::Connection> connection, 
     int status, const std::string &/*reason*/)
     {
-        std::cout << "ws_mobilecursor: Closed connection " << connection.get() 
-            << " with status code " << status << '\n';
+        if(active_connection.get() == connection.get())
+        {
+            active_connection.reset();
+            std::cout << "ws_mobilecursor: Active connection just closes. "
+                "status code " << status << " " << connection.get() << std::endl;
+        }
+        else
+        {
+            std::cout << "ws_mobilecursor: Closed connection " << connection.get() 
+                << " with status code " << status << std::endl;            
+        }
     };
     
     // mobilecursor - on message
@@ -250,31 +271,55 @@ Server::Server()
         controller::handle_event(event);
     };
 
-    std::cout << "Server initialization complete.\n";    
+//    std::cout << "Server initialization complete.\n";    
 }
 
 Server::~Server()
 {
 }
 
-void Server::run(std::shared_ptr<std::thread> &http_thread, std::shared_ptr<std::thread> &ws_thread)
+void Server::run(std::shared_ptr<std::thread> &http_thread, 
+    std::shared_ptr<std::thread> &ws_thread, 
+    std::shared_ptr<std::thread> &alus_thread)
 {
+//    std::mutex m;
+//    std::unique_lock<std::mutex> lk(m);
+//    std::condition_variable cv;
+//    
+//    bool ws_ready = false;
+    
     http_thread = std::make_shared<std::thread>([this]
     {
-        std::cout << "Running server\n";
+//        std::cout << "Running server\n";
         http_server.start([this](const ushort &port){
-            std::cout << "server running..\n";
+            std::cout << "Server is running at " << get_local_ip() << ':' 
+                << port << std::endl;
         });
         
     });
     
-    ws_thread = std::make_shared<std::thread>([this]
+    ws_thread = std::make_shared<std::thread>([this, &alus_thread]
     {
-        std::cout << "Running ws\n";
-        ws_server.start([this](const ushort &port){
+//        std::cout << "Running ws\n";
+        ws_server.start([this, &alus_thread](const ushort &port){
+//            ws_ready = true;
+//            cv.notify_one();
             std::cout << "ws running..\n";
         });
     });
+    
+//    cv.wait(lk, [&ws_ready]{ return ws_ready; });
+    
+//    auto alus_thread_ = std::thread(
+//        aluspointer::start_listen_to_updated_windows
+//        ([this](int id){
+//            std::cout << '0' << std::to_string(id) << std::endl;
+//            if(active_connection)
+//                active_connection->send("0" + std::to_string(id));
+//        }),
+//        this, this);
+//    
+//    alus_thread = std::make_shared<std::thread>(alus_thread_);
 }
 
 void Server::stop()
