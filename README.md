@@ -1,10 +1,10 @@
 # Mobile Cursor
 
-Control the desktop with a mobile browser locally.
+Control a desktop with a mobile browser on local network.
 
 ### Features
 - Touchpad
-- Full soft native keyboard support (including autocorrect, emojis, etc.)
+- Full soft native keyboard support (including autocorrect and emojis)
 - Presentation remote
 
 ### Dependencies
